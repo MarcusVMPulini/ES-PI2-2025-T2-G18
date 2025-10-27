@@ -4,9 +4,9 @@
   "description": "Projeto Integrador - Backend",
   "main": "index.js",
   "scripts": {
-    "teste" : "ts-node src/teste.ts",
-    "build" : "tsc",
-    "start" : "npm run build && node dist/server.js"
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "npm run build && node dist/server.js"
   },
   "keywords": [
     "express",
@@ -20,13 +20,17 @@
   "author": "Marcus Vinicius",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0",
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.9.1",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",

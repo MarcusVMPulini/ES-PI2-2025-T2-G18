@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import routes from "./routes";
 
 const app = express();
 const port = 3000;
@@ -11,6 +12,8 @@ app.use(bodyParser.json());
 app.get("/", (req: Request, res: Response) => {
     res.send("Hello World");
 });
+
+app.use("/api", routes);
 
 //Definir as rotas
 /*app.get("/estudantes", async (req: Request, res: Response) => {
