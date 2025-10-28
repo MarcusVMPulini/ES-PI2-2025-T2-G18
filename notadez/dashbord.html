@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"/>
+    <title>NotaDez - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<header>
+    <div id="userInfo">Carregando...</div>
+    <div>
+        <a href="dashboard.html">Dashboard</a> |
+        <a href="#" id="logoutBtn">Sair</a>
+    </div>
+</header>
+
+<main>
+    <h1>Painel do Docente</h1>
+
+    <div class="flex-row">
+        <section class="card-list" style="flex:1;">
+            <h3>Minhas Instituições / Cursos</h3>
+            <div id="listaInstituicoes"></div>
+
+            <h4 style="margin-top:16px;">Adicionar Instituição + Curso</h4>
+            <form id="formInstituicao">
+                <label>Instituição</label>
+                <input type="text" name="nomeInstituicao" required/>
+
+                <label>Curso</label>
+                <input type="text" name="nomeCurso" required/>
+
+                <button type="submit">Adicionar</button>
+            </form>
+        </section>
+
+        <section class="card-list" style="flex:1;">
+            <h3>Disciplinas</h3>
+
+            <label>Instituição / Curso</label>
+            <select id="disc_instituicao"></select>
+
+            <div id="listaDisciplinas" style="margin-top:12px;"></div>
+
+            <h4 style="margin-top:16px;">Adicionar Disciplina</h4>
+            <form id="formDisciplina">
+                <label>Instituição / Curso</label>
+                <select name="instituicao" id="disc_instituicao_clone"></select>
+
+                <label>Nome da disciplina</label>
+                <input type="text" name="nome" required/>
+
+                <label>Sigla (para fórmula e tabela)</label>
+                <input type="text" name="sigla" required/>
+
+                <label>Código</label>
+                <input type="text" name="codigo" required/>
+
+                <label>Período (ex: 1º semestre)</label>
+                <input type="text" name="periodo" required/>
+
+                <button type="submit">Adicionar Disciplina</button>
+            </form>
+        </section>
+
+        <section class="card-list" style="flex:1;">
+            <h3>Turmas</h3>
+
+            <label>Instituição / Curso</label>
+            <select id="turma_instituicao"></select>
+
+            <label>Disciplina</label>
+            <select id="turma_disciplina" name="disciplinaSelect"></select>
+
+            <div id="listaTurmas" style="margin-top:12px;"></div>
+
+            <h4 style="margin-top:16px;">Adicionar Turma</h4>
+            <form id="formTurma">
+                <label>Disciplina</label>
+                <select name="disciplina" id="turma_disciplina_clone"></select>
+
+                <label>Nome da turma (ex: Turma 1)</label>
+                <input type="text" name="nomeTurma" required/>
+
+                <label>Apelido / turno (ex: Noite)</label>
+                <input type="text" name="apelido" required/>
+
+                <button type="submit">Adicionar Turma</button>
+
+                <div class="notice" style="margin-top:12px;">
+                    Ao excluir uma turma, a ação é irreversível. No projeto real,
+                    haveria confirmação via e-mail conforme descrito no escopo. Aqui usamos
+                    apenas um <code>confirm()</code> na interface. :contentReference[oaicite:9]{index=9}
+                </div>
+            </form>
+        </section>
+    </div>
+</main>
+
+<footer>NotaDez - Projeto Integrador 2 (PUC-Campinas, 2025) :contentReference[oaicite:10]{index=10}</footer>
+
+<script src="js/storage.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script>
+    // precisamos clonar selects para os forms (porque dashboard.js popula só os "principais")
+    document.addEventListener("DOMContentLoaded", ()=>{
+        // depois do populateInstituicoes rodar a 1a vez dentro do initDashboard,
+        // vamos copiar as opções para os clones, para os forms.
+        const interval = setInterval(()=>{
+            const src1 = document.getElementById("disc_instituicao");
+            const dst1 = document.getElementById("disc_instituicao_clone");
+            const src2 = document.getElementById("turma_disciplina");
+            const dst2 = document.getElementById("turma_disciplina_clone");
+
+            if(src1 && dst1 && src1.options.length>0){
+                dst1.innerHTML = src1.innerHTML;
+            }
+            if(src2 && dst2 && src2.options.length>0){
+                dst2.innerHTML = src2.innerHTML;
+            }
+        }, 500);
+        // simples polling pra copiar selects. Em app final isso seria mais limpo.
+    });
+</script>
+</body>
+</html>

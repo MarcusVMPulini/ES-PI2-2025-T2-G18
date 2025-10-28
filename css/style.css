@@ -100,4 +100,3 @@ label[for="inputemail"], label[for="inputPassword6"] {
 #login .row:has(button) {
     margin-bottom: 5px; /* Espaçamento abaixo do botão para empurrar o link para baixo */
 }
-

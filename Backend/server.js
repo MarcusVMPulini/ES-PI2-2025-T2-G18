@@ -13,7 +13,7 @@ app.use(express.json());
 
 // === Rota principal ===
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, "../Front-End/index.html"));
+  res.sendFile(path.join(__dirname, "../notadez/index.html"));
 });
 
 // === Rota de login ===
@@ -35,4 +35,3 @@ app.post('/api/login', (req, res) => {
 index.listen(port, () => {
     console.log(`Servidor no Ar na porta ${port}`);
 });
-
