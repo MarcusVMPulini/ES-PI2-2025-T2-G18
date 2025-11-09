@@ -1,5 +1,9 @@
 import { Router } from "express";
 import authRoutes from "./auth.routes";import { authMiddleware } from "../middleware/auth.middleware";
+import instituicaoRoutes from "./instituicao.routes";
+import cursoRoutes from "./curso.routes";
+import disciplinaRoutes from "./disciplina.routes";
+
 
 const router = Router();
 
@@ -12,6 +16,12 @@ router.get("/ping", (req, res) => {
 });
 
 router.use("/auth", authRoutes);
+router.use("/instituicoes", instituicaoRoutes);
+router.use("/cursos", cursoRoutes);
+router.use("/disciplinas", disciplinaRoutes);
+
+
+
 
 export default router;
 
