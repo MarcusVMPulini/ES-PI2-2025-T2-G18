@@ -49,9 +49,10 @@ function renderTabelaNotas(){
     comps.forEach(c=>{
         html += <th>${c.sigla}</th>;
     });
-    html += <th>Média Final</th></tr></thead><tbody>;
+    html += <th>Média Final</th>
+    </tr></thead><tbody>;
 
-    alunos.forEach(al=>{
+    alunos.forEach(al =>{
         html += `<tr data-aluno="${al.id}">
             <td>${al.matricula}</td>
             <td>${al.nome}</td>`;
