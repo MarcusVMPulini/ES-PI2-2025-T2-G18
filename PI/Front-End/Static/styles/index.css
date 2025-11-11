@@ -168,3 +168,12 @@ label[for="inputPassword6"] {
     height: 45px;
     width: 280px;
 }
+
+#info {
+
+    /* Aumentado de 420px para 450px para acomodar os inputs maiores */
+    padding: 20px;
+
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
