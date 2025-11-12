@@ -1,52 +1,77 @@
 import { Request, Response } from "express";
-import { Database } from "../config/database";
+import { instituicaoService } from "../services/instituicao.service";
 
-const db = Database.getInstance();
-
-export const listarInstituicoes = (req: Request, res: Response) => {
-  const instituicoes = db.getTable("instituicoes");
-  return res.json(instituicoes);
+export const listarInstituicoes = async (req: Request, res: Response) => {
+  try {
+    const instituicoes = await instituicaoService.findAll();
+    return res.json(instituicoes);
+  } catch (error) {
+    console.error("Erro ao listar instituições:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
 };
 
-export const criarInstituicao = (req: Request, res: Response) => {
-  const { nome } = req.body;
-  if (!nome) return res.status(400).json({ message: "Nome é obrigatório" });
+export const criarInstituicao = async (req: Request, res: Response) => {
+  try {
+    const { nome } = req.body;
+    if (!nome) {
+      return res.status(400).json({ message: "Nome é obrigatório" });
+    }
 
-  const instituicoes = db.getTable("instituicoes");
-  const nova = { id: Date.now(), nome };
+    const id = await instituicaoService.create(nome);
+    const nova = await instituicaoService.findById(id);
 
-  instituicoes.push(nova);
-  db.setTable("instituicoes", instituicoes);
-
-  return res.status(201).json({ message: "Instituição criada", nova });
+    return res.status(201).json({ message: "Instituição criada", instituicao: nova });
+  } catch (error) {
+    console.error("Erro ao criar instituição:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
 };
 
-export const editarInstituicao = (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { nome } = req.body;
+export const editarInstituicao = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { nome } = req.body;
 
-  const instituicoes = db.getTable("instituicoes");
-  const index = instituicoes.findIndex((i: any) => i.id == Number(id));
+    if (!nome) {
+      return res.status(400).json({ message: "Nome é obrigatório" });
+    }
 
-  if (index === -1)
-    return res.status(404).json({ message: "Instituição não encontrada" });
+    const existe = await instituicaoService.findById(Number(id));
+    if (!existe) {
+      return res.status(404).json({ message: "Instituição não encontrada" });
+    }
 
-  instituicoes[index].nome = nome;
-  db.setTable("instituicoes", instituicoes);
+    const atualizado = await instituicaoService.update(Number(id), nome);
+    if (!atualizado) {
+      return res.status(500).json({ message: "Erro ao atualizar instituição" });
+    }
 
-  return res.json({ message: "Instituição atualizada", instituicao: instituicoes[index] });
+    const instituicao = await instituicaoService.findById(Number(id));
+    return res.json({ message: "Instituição atualizada", instituicao });
+  } catch (error) {
+    console.error("Erro ao editar instituição:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
 };
 
-export const excluirInstituicao = (req: Request, res: Response) => {
-  const { id } = req.params;
-  const instituicoes = db.getTable("instituicoes");
-  const index = instituicoes.findIndex((i: any) => i.id == Number(id));
+export const excluirInstituicao = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
 
-  if (index === -1)
-    return res.status(404).json({ message: "Instituição não encontrada" });
+    const existe = await instituicaoService.findById(Number(id));
+    if (!existe) {
+      return res.status(404).json({ message: "Instituição não encontrada" });
+    }
 
-  instituicoes.splice(index, 1);
-  db.setTable("instituicoes", instituicoes);
+    const deletado = await instituicaoService.delete(Number(id));
+    if (!deletado) {
+      return res.status(500).json({ message: "Erro ao excluir instituição" });
+    }
 
-  return res.json({ message: "Instituição excluída" });
+    return res.json({ message: "Instituição excluída" });
+  } catch (error) {
+    console.error("Erro ao excluir instituição:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
 };

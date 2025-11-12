@@ -1,43 +1,60 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { authService } from "../services/auth.service";
+import dotenv from "dotenv";
 
-interface User {
-  email: string;
-  password: string;
-}
+dotenv.config();
 
-let users: User[] = []; // Mock temporário
-
-const SECRET = "segredo_super_secreto"; // depois vamos para o .env
+const SECRET = process.env.JWT_SECRET || "segredo_super_secreto";
 
 export const register = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const userExists = users.find(u => u.email === email);
-  if (userExists)
-    return res.status(400).json({ message: "Usuário já cadastrado!" });
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email e senha são obrigatórios" });
+    }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+    const userExists = await authService.findByEmail(email);
+    if (userExists) {
+      return res.status(400).json({ message: "Usuário já cadastrado!" });
+    }
 
-  users.push({ email, password: hashedPassword });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await authService.create(email, hashedPassword);
 
-  return res.status(201).json({ message: "Usuário registrado com sucesso!" });
+    return res.status(201).json({ message: "Usuário registrado com sucesso!" });
+  } catch (error) {
+    console.error("Erro ao registrar usuário:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = users.find(u => u.email === email);
-  if (!user)
-    return res.status(401).json({ message: "Credenciais inválidas!" });
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email e senha são obrigatórios" });
+    }
 
-  const validPassword = await bcrypt.compare(password, user.password);
+    const user = await authService.findByEmail(email);
+    if (!user) {
+      return res.status(401).json({ message: "Credenciais inválidas!" });
+    }
 
-  if (!validPassword)
-    return res.status(401).json({ message: "Credenciais inválidas!" });
+    const validPassword = await bcrypt.compare(password, user.password);
 
-  const token = jwt.sign({ email }, SECRET, { expiresIn: "2h" });
+    if (!validPassword) {
+      return res.status(401).json({ message: "Credenciais inválidas!" });
+    }
 
-  return res.json({ message: "Login OK!", token });
+    const token = jwt.sign({ email, id: user.id }, SECRET, { expiresIn: "2h" });
+
+    return res.json({ message: "Login OK!", token });
+  } catch (error) {
+    console.error("Erro ao fazer login:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
 };

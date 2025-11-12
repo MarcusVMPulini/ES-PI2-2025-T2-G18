@@ -2,12 +2,13 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import routes from "./routes";
+import { testConnection } from "./config/database";
 
 const app = express();
 const port = 3000;
 
+app.use(cors());
 app.use(bodyParser.json());
-
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Hello World");
@@ -15,18 +16,8 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api", routes);
 
-//Definir as rotas
-/*app.get("/estudantes", async (req: Request, res: Response) => {
-    try {
-        const estudantes = await getAllEstudantes();
-        res.json(estudantes);
-    } catch (error) {
-        console.error("Erro ao buscar estudantes:", error);
-        res.status(500).json({ error: "Erro ao buscar estudantes" });
-    }
-});
-*/
-
-app.listen(port, () => {
+// Inicializar servidor e testar conexão com banco
+app.listen(port, async () => {
     console.log(`Server rodando na porta: ${port}`);
+    await testConnection();
 });

@@ -1,76 +1,99 @@
 import { Request, Response } from "express";
-import { Database } from "../config/database";
-
-const db = Database.getInstance();
+import { disciplinaService } from "../services/disciplina.service";
+import { cursoService } from "../services/curso.service";
 
 // ✅ Listar
-export const listarDisciplinas = (req: Request, res: Response) => {
-  const disciplinas = db.getTable("disciplinas");
-  return res.json(disciplinas);
+export const listarDisciplinas = async (req: Request, res: Response) => {
+  try {
+    const disciplinas = await disciplinaService.findAll();
+    return res.json(disciplinas);
+  } catch (error) {
+    console.error("Erro ao listar disciplinas:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
 };
 
 // ✅ Criar
-export const criarDisciplina = (req: Request, res: Response) => {
-  const { nome, idCurso } = req.body;
+export const criarDisciplina = async (req: Request, res: Response) => {
+  try {
+    const { nome, idCurso } = req.body;
 
-  if (!nome || !idCurso)
-    return res.status(400).json({ message: "Nome e idCurso são obrigatórios" });
+    if (!nome || !idCurso) {
+      return res.status(400).json({ message: "Nome e idCurso são obrigatórios" });
+    }
 
-  const cursos = db.getTable("cursos");
-  const existeCurso = cursos.find((c: any) => c.id == Number(idCurso));
+    const existeCurso = await cursoService.findById(Number(idCurso));
+    if (!existeCurso) {
+      return res.status(404).json({ message: "Curso não encontrado" });
+    }
 
-  if (!existeCurso)
-    return res.status(404).json({ message: "Curso não encontrado" });
+    const id = await disciplinaService.create(nome, Number(idCurso));
+    const nova = await disciplinaService.findById(id);
 
-  const disciplinas = db.getTable("disciplinas");
-  const nova = { id: Date.now(), nome, idCurso: Number(idCurso) };
-
-  disciplinas.push(nova);
-  db.setTable("disciplinas", disciplinas);
-
-  return res.status(201).json({ message: "Disciplina criada", nova });
+    return res.status(201).json({ message: "Disciplina criada", disciplina: nova });
+  } catch (error) {
+    console.error("Erro ao criar disciplina:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
 };
 
 // ✅ Editar
-export const editarDisciplina = (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { nome, idCurso } = req.body;
+export const editarDisciplina = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { nome, idCurso } = req.body;
 
-  const disciplinas = db.getTable("disciplinas");
-  const index = disciplinas.findIndex((d: any) => d.id == Number(id));
+    const existe = await disciplinaService.findById(Number(id));
+    if (!existe) {
+      return res.status(404).json({ message: "Disciplina não encontrada" });
+    }
 
-  if (index === -1)
-    return res.status(404).json({ message: "Disciplina não encontrada" });
+    if (idCurso) {
+      const existeCurso = await cursoService.findById(Number(idCurso));
+      if (!existeCurso) {
+        return res.status(404).json({ message: "Curso não encontrado" });
+      }
+    }
 
-  if (idCurso) {
-    const cursos = db.getTable("cursos");
-    const existeCurso = cursos.find((c: any) => c.id == Number(idCurso));
-    if (!existeCurso)
-      return res.status(404).json({ message: "Curso não encontrado" });
-    disciplinas[index].idCurso = Number(idCurso);
+    const atualizado = await disciplinaService.update(
+      Number(id),
+      nome,
+      idCurso ? Number(idCurso) : undefined
+    );
+
+    if (!atualizado) {
+      return res.status(500).json({ message: "Erro ao atualizar disciplina" });
+    }
+
+    const disciplina = await disciplinaService.findById(Number(id));
+    return res.json({
+      message: "Disciplina atualizada",
+      disciplina,
+    });
+  } catch (error) {
+    console.error("Erro ao editar disciplina:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
   }
-
-  if (nome) disciplinas[index].nome = nome;
-
-  db.setTable("disciplinas", disciplinas);
-
-  return res.json({
-    message: "Disciplina atualizada",
-    disciplina: disciplinas[index],
-  });
 };
 
 // ✅ Excluir
-export const excluirDisciplina = (req: Request, res: Response) => {
-  const { id } = req.params;
-  const disciplinas = db.getTable("disciplinas");
-  const index = disciplinas.findIndex((d: any) => d.id == Number(id));
+export const excluirDisciplina = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
 
-  if (index === -1)
-    return res.status(404).json({ message: "Disciplina não encontrada" });
+    const existe = await disciplinaService.findById(Number(id));
+    if (!existe) {
+      return res.status(404).json({ message: "Disciplina não encontrada" });
+    }
 
-  disciplinas.splice(index, 1);
-  db.setTable("disciplinas", disciplinas);
+    const deletado = await disciplinaService.delete(Number(id));
+    if (!deletado) {
+      return res.status(500).json({ message: "Erro ao excluir disciplina" });
+    }
 
-  return res.json({ message: "Disciplina excluída com sucesso" });
+    return res.json({ message: "Disciplina excluída com sucesso" });
+  } catch (error) {
+    console.error("Erro ao excluir disciplina:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
 };
