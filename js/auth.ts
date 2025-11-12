@@ -4,15 +4,40 @@ interface User {
 }
 
 // Função de login
-function loginUser(email: string, senha: string): { ok: boolean; msg: string } {
-  // Exemplo de validação simples (substituir por API real)
-  if (email === "professor@notadez.com" && senha === "12345678") {
-    const user: User = { email };
-    localStorage.setItem("user", JSON.stringify(user));
-    return { ok: true, msg: "Login bem-sucedido!" };
+import express from "express";
+import { pool } from "../backend/database.js";
+
+const router = express.Router();
+
+// Lista turmas de um professor
+router.get("/:disciplinaId", async (req, res) => {
+  const { disciplinaId } = req.params;
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM turmas WHERE Disciplina_ID = ?",
+      [disciplinaId]
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao buscar turmas" });
   }
-  return { ok: false, msg: "E-mail ou senha inválidos." };
-}
+});
+
+// Adiciona turma
+router.post("/", async (req, res) => {
+  const { Disciplina_ID, nome, apelido } = req.body;
+  try {
+    await pool.query(
+      "INSERT INTO turmas (Turmas_ID, Disciplina_ID, nome, apelido) VALUES (UUID(), ?, ?, ?)",
+      [Disciplina_ID, nome, apelido]
+    );
+    res.json({ ok: true, msg: "Turma criada com sucesso!" });
+  } catch (err) {
+    res.status(500).json({ ok: false, msg: "Erro ao criar turma" });
+  }
+});
+
+export default router;
 
 // Retorna o usuário logado do localStorage
 function getCurrentUser(): User | null {
