@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { cursoService } from "../services/curso.service";
-import { instituicaoService } from "../services/instituicao.service";
 
 // ✅ Listar todos os cursos
 export const listarCursos = async (req: Request, res: Response) => {
@@ -16,18 +15,13 @@ export const listarCursos = async (req: Request, res: Response) => {
 // ✅ Criar curso
 export const criarCurso = async (req: Request, res: Response) => {
   try {
-    const { nome, idInstituicao } = req.body;
+    const { nomeCurso, nomeInstituicao } = req.body;
 
-    if (!nome || !idInstituicao) {
-      return res.status(400).json({ message: "Nome e idInstituicao são obrigatórios" });
+    if (!nomeCurso || !nomeInstituicao) {
+      return res.status(400).json({ message: "nomeCurso e nomeInstituicao são obrigatórios" });
     }
 
-    const existeInstituicao = await instituicaoService.findById(Number(idInstituicao));
-    if (!existeInstituicao) {
-      return res.status(404).json({ message: "Instituição não encontrada" });
-    }
-
-    const id = await cursoService.create(nome, Number(idInstituicao));
+    const id = await cursoService.create(nomeCurso, nomeInstituicao);
     const novo = await cursoService.findById(id);
 
     return res.status(201).json({ message: "Curso criado", curso: novo });
@@ -41,24 +35,17 @@ export const criarCurso = async (req: Request, res: Response) => {
 export const editarCurso = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { nome, idInstituicao } = req.body;
+    const { nomeCurso, nomeInstituicao } = req.body;
 
     const existe = await cursoService.findById(Number(id));
     if (!existe) {
       return res.status(404).json({ message: "Curso não encontrado" });
     }
 
-    if (idInstituicao) {
-      const existeInstituicao = await instituicaoService.findById(Number(idInstituicao));
-      if (!existeInstituicao) {
-        return res.status(404).json({ message: "Instituição não encontrada" });
-      }
-    }
-
     const atualizado = await cursoService.update(
       Number(id),
-      nome,
-      idInstituicao ? Number(idInstituicao) : undefined
+      nomeCurso,
+      nomeInstituicao
     );
 
     if (!atualizado) {

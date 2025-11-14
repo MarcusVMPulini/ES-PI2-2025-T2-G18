@@ -2,9 +2,7 @@ import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
 import {
   listarInstituicoes,
-  criarInstituicao,
-  editarInstituicao,
-  excluirInstituicao,
+  listarCursosPorInstituicao,
 } from "../controllers/instituicao.controller";
 
 const router = Router();
@@ -12,9 +10,8 @@ const router = Router();
 // Todas as rotas de instituição exigem login (token)
 router.use(authMiddleware);
 
+// Rota específica deve vir antes da rota com parâmetro
+router.get("/:nomeInstituicao/cursos", listarCursosPorInstituicao);
 router.get("/", listarInstituicoes);
-router.post("/", criarInstituicao);
-router.put("/:id", editarInstituicao);
-router.delete("/:id", excluirInstituicao);
 
 export default router;

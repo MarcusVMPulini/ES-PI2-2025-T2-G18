@@ -10,10 +10,10 @@ const SECRET = process.env.JWT_SECRET || "segredo_super_secreto";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { nome, email, senha, telefone } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email e senha são obrigatórios" });
+    if (!nome || !email || !senha) {
+      return res.status(400).json({ message: "Nome, email e senha são obrigatórios" });
     }
 
     const userExists = await authService.findByEmail(email);
@@ -21,8 +21,8 @@ export const register = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Usuário já cadastrado!" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await authService.create(email, hashedPassword);
+    const hashedPassword = await bcrypt.hash(senha, 10);
+    await authService.create(nome, email, hashedPassword, telefone);
 
     return res.status(201).json({ message: "Usuário registrado com sucesso!" });
   } catch (error) {
@@ -33,9 +33,9 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, senha } = req.body;
 
-    if (!email || !password) {
+    if (!email || !senha) {
       return res.status(400).json({ message: "Email e senha são obrigatórios" });
     }
 
@@ -44,7 +44,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Credenciais inválidas!" });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = await bcrypt.compare(senha, user.senha);
 
     if (!validPassword) {
       return res.status(401).json({ message: "Credenciais inválidas!" });
