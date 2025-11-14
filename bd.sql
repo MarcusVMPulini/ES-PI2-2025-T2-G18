@@ -1,0 +1,77 @@
+CREATE DATABASE IF NOT EXISTS notadez;
+USE notadez;
+
+-- usuários
+CREATE TABLE usuarios (
+  ID VARCHAR(50) PRIMARY KEY,
+  nome VARCHAR(200) NOT NULL,
+  email VARCHAR(200) NOT NULL UNIQUE,
+  telefone VARCHAR(50),
+  senha VARCHAR(200) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- instituições
+CREATE TABLE instituicoes (
+  ID VARCHAR(50) PRIMARY KEY,
+  user_ID VARCHAR(50) NOT NULL,
+  nome_Instituicao VARCHAR(200) NOT NULL,
+  nome_Curso VARCHAR(200) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_ID) REFERENCES usuarios(ID) ON DELETE CASCADE
+);
+
+-- disciplinas
+CREATE TABLE disciplinas (
+  ID_Disciplinas VARCHAR(50) PRIMARY KEY,
+  Instituicao_ID VARCHAR(50) NOT NULL,
+  nome VARCHAR(200) NOT NULL,
+  sigla VARCHAR(50),
+  codigo VARCHAR(50),
+  periodo VARCHAR(50),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (Instituicao_ID) REFERENCES instituicoes(ID) ON DELETE CASCADE
+);
+
+-- turmas
+CREATE TABLE turmas (
+  Turmas_ID VARCHAR(50) PRIMARY KEY,
+  Disciplina_ID VARCHAR(50) NOT NULL,
+  nome VARCHAR(200) NOT NULL,
+  apelido VARCHAR(200),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (Disciplina_ID) REFERENCES disciplinas(ID_Disciplinas) ON DELETE CASCADE
+);
+
+-- alunos
+CREATE TABLE alunos (
+  ID_Alunos VARCHAR(80) PRIMARY KEY,
+  Turma_ID VARCHAR(50) NOT NULL,
+  matricula VARCHAR(100),
+  nome VARCHAR(200),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (Turma_ID) REFERENCES turmas(Turmas_ID) ON DELETE CASCADE
+);
+
+-- componentes
+CREATE TABLE componentes (
+  Componentes_ID VARCHAR(50) PRIMARY KEY,
+  Disciplina_ID VARCHAR(50) NOT NULL,
+  nome VARCHAR(200),
+  sigla VARCHAR(50),
+  descricao TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (Disciplina_ID) REFERENCES disciplinas(ID_Disciplinas) ON DELETE CASCADE
+);
+
+-- notas
+CREATE TABLE notas (
+  ID_notas INT AUTO_INCREMENT PRIMARY KEY,
+  ID_Aluno VARCHAR(80) NOT NULL,
+  ID_Componente VARCHAR(50) NOT NULL,
+  valor DECIMAL(6,2) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (ID_Aluno) REFERENCES alunos(ID_Alunos) ON DELETE CASCADE,
+  FOREIGN KEY (ID_Componente) REFERENCES componentes( Componentes_ID) ON DELETE CASCADE,
+  UNIQUE KEY uq_aluno_comp (ID_Aluno, ID_Componente)
+);
