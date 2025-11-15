@@ -1,0 +1,62 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#cadastro {
+    margin: 0 auto;
+    margin-top: 220px;
+    width: 500px; /* Aumentado de 420px para 450px para acomodar os inputs maiores */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
+
+label[for="inputRA"], label[for="inputName"] {
+    font-weight: 700 !important;
+    color: #495057 !important;
+    white-space: nowrap !important;
+    width: 80px !important;
+    text-align: right !important;
+    padding-right: 1px !important;
+}
+
+#inputRA {
+    border-radius: 0.3rem ;
+    border: 1px solid #ced4da ;
+    padding: 0.75rem ;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    height: 45px;
+    width: 100px ; /* Forçando largura de 280px nos inputs de e-mail e senha */
+}
+
+#inputName {
+    border-radius: 0.3rem ;
+    border: 1px solid #ced4da ;
+    padding: 0.75rem ;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    height: 45px;
+    width: 280px ; /* Forçando largura de 280px nos inputs de e-mail e senha */
+}
+
+#btnlink {
+    color:#495057;
+    text-decoration: none;
+}
+
+#btnlink:hover {
+    color:red;
+    text-decoration: underline;
+    text-decoration-color: red;
+}
+
+#botoes {
+    display: flex;
+    align-content: center;
+    gap: 20px;
+}
+
+#btnedit {
+    margin-left: 180px;
+}

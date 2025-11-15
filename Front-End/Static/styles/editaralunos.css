@@ -1,0 +1,21 @@
+#editaralunos {
+    margin: 0 auto;
+    margin-top: 20px;
+    width: 500px; /* Aumentado de 420px para 450px para acomodar os inputs maiores */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
+
+#fora{
+    display: flex;
+    margin: 0 auto;
+    width: 500px; /* Aumentado de 420px para 450px para acomodar os inputs maiores */
+    margin-top: 210px;
+    gap: 20px
+}
+
+#coluna{
+    display: flex;
+}
