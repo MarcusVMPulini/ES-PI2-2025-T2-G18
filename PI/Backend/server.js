@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const nodemailer = require('nodemailer'); // Para enviar e-mails
 
 const index = express();
 const port = 3000;
@@ -78,5 +79,43 @@ app.post('/api/cadastro', (req, res) => {
       nome: novoUsuario.nome,
       email: novoUsuario.email
     }
+  });
+});
+
+// Configure seu SMTP real ou use Gmail
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: "seuemail@gmail.com",
+    pass: "suasenha"
+  }
+});
+
+// Rota de recuperação de senha
+app.post('/api/recuperar-senha', (req, res) => {
+  const { email } = req.body;
+  const usuario = usuarios.find(u => u.email === email);
+
+  if (!usuario) return res.status(404).json({ message: "E-mail não encontrado." });
+
+  // Criar token simples (em produção use JWT ou UUID)
+  const token = Math.random().toString(36).substring(2, 15);
+  usuario.token = token; // salvar token no mock
+
+  const link = `http://localhost:3000/redefinir-senha.html?token=${token}&email=${email}`;
+
+  const mailOptions = {
+    from: "seuemail@gmail.com",
+    to: email,
+    subject: "Redefinir senha NotaDez",
+    text: `Clique no link para redefinir sua senha: ${link}`
+  };
+
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Erro ao enviar e-mail." });
+    }
+    res.json({ message: "E-mail de redefinição enviado com sucesso!" });
   });
 });

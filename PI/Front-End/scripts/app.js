@@ -102,6 +102,22 @@ function showAlert(message, type = "info") {
   setTimeout(() => div.remove(), 4000);
 }
 
+app.post('/api/redefinir-senha', (req, res) => {
+  const { email, token, novaSenha } = req.body;
+
+  const usuario = usuarios.find(u => u.email === email && u.token === token);
+
+  if (!usuario) return res.status(400).json({ message: "Token inválido ou expirado." });
+  if (!novaSenha || novaSenha.length < 8) {
+    return res.status(400).json({ message: "A senha deve ter no mínimo 8 caracteres." });
+  }
+
+  usuario.senha = novaSenha;
+  delete usuario.token; // remover token após uso
+
+  res.json({ message: "Senha alterada com sucesso!" });
+});
+
 function validateEmail(email) {
   const regex = /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/;
   return regex.test(email);
