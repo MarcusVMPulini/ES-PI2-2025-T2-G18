@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"/>
+    <title>NotaDez - Turma</title>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<header>
+    <div>
+        <a href="dashboard.html" style="color:#fff;text-decoration:none;">← Voltar Dashboard</a>
+    </div>
+    <div>
+        <a href="#" id="logoutBtn" style="color:#fff;text-decoration:none;">Sair</a>
+    </div>
+</header>
+
+<main>
+    <h1>Turma / Lançamento de Notas</h1>
+
+    <section>
+        <h2>Informações</h2>
+        <div id="turmaInfo" style="font-size:13px;line-height:1.4;color:#333;"></div>
+    </section>
+
+    <section>
+        <h2>Componentes de Nota</h2>
+        <p style="font-size:13px;color:#444;line-height:1.4;">
+            Cada prova / atividade cadastrada vira uma coluna de nota (0.00 a 10.00).
+            Exemplo: P1, P2, P3. :contentReference[oaicite:11]{index=11}
+        </p>
+
+        <div class="flex-row">
+            <div class="card-list" style="flex:1;">
+                <h3>Já cadastrados</h3>
+                <div id="listaComponentes"></div>
+            </div>
+
+            <div class="card-list" style="flex:1;">
+                <h3>Novo componente</h3>
+                <form id="formComponente">
+                    <label>Nome (ex: Prova 1)</label>
+                    <input type="text" name="nomeComp" required/>
+
+                    <label>Sigla (ex: P1)</label>
+                    <input type="text" name="sigla" required/>
+
+                    <label>Descrição</label>
+                    <textarea name="descricao" rows="3" required></textarea>
+
+                    <button type="submit">Adicionar Componente</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="notice" style="margin-top:12px;">
+            A nota final exibida será a média simples de todos os componentes.
+            Isso está de acordo com a alternativa permitida ao requisito de fórmula de cálculo da nota final. :contentReference[oaicite:12]{index=12}
+        </div>
+    </section>
+
+    <section>
+        <h2>Alunos da Turma</h2>
+
+        <div class="flex-row">
+            <div class="card-list" style="flex:1;">
+                <h3>Adicionar Aluno Manualmente</h3>
+                <form id="formAluno">
+                    <label>Matrícula / RA</label>
+                    <input type="text" name="matricula" required/>
+
+                    <label>Nome Completo</label>
+                    <input type="text" name="nome" required/>
+
+                    <button type="submit">Adicionar Aluno</button>
+                </form>
+            </div>
+
+            <div class="card-list" style="flex:1;">
+                <h3>Importar Alunos via CSV</h3>
+                <form id="formImportCSV">
+                    <label>Arquivo CSV (colunas: Matricula,Nome,...)</label>
+                    <input type="file" id="csvFile" accept=".csv" required/>
+
+                    <button type="submit">Importar CSV</button>
+
+                    <div class="notice" style="margin-top:12px;">
+                        Só usamos as DUAS PRIMEIRAS COLUNAS do CSV:
+                        1ª = identificador (RA/matrícula), 2ª = nome.
+                        Demais colunas são ignoradas. :contentReference[oaicite:13]{index=13}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Notas da Turma</h2>
+        <div id="areaNotas"></div>
+
+        <div style="margin-top:20px;">
+            <button id="btnExportCSV">Exportar CSV</button>
+            <div class="notice" style="margin-top:8px;">
+                A exportação CSV só é liberada quando TODAS as notas de TODOS os alunos estiverem preenchidas,
+                conforme descrito no requisito de exportação. :contentReference[oaicite:14]{index=14}
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>NotaDez - Projeto Integrador 2 (PUC-Campinas, 2025) :contentReference[oaicite:15]{index=15}</footer>
+
+<script src="js/storage.ts"></script>
+<script src="js/auth.ts"></script>
+<script src="js/turma.ts"></script>
+</body>
+</html>

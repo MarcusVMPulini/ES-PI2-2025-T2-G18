@@ -1,0 +1,83 @@
+import { Request, Response } from "express";
+import { cursoService } from "../services/curso.service";
+
+// ✅ Listar todos os cursos
+export const listarCursos = async (req: Request, res: Response) => {
+  try {
+    const cursos = await cursoService.findAll();
+    return res.json(cursos);
+  } catch (error) {
+    console.error("Erro ao listar cursos:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
+};
+
+// ✅ Criar curso
+export const criarCurso = async (req: Request, res: Response) => {
+  try {
+    const { nomeCurso, nomeInstituicao } = req.body;
+
+    if (!nomeCurso || !nomeInstituicao) {
+      return res.status(400).json({ message: "nomeCurso e nomeInstituicao são obrigatórios" });
+    }
+
+    const id = await cursoService.create(nomeCurso, nomeInstituicao);
+    const novo = await cursoService.findById(id);
+
+    return res.status(201).json({ message: "Curso criado", curso: novo });
+  } catch (error) {
+    console.error("Erro ao criar curso:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
+};
+
+// ✅ Editar curso
+export const editarCurso = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { nomeCurso, nomeInstituicao } = req.body;
+
+    const existe = await cursoService.findById(Number(id));
+    if (!existe) {
+      return res.status(404).json({ message: "Curso não encontrado" });
+    }
+
+    const atualizado = await cursoService.update(
+      Number(id),
+      nomeCurso,
+      nomeInstituicao
+    );
+
+    if (!atualizado) {
+      return res.status(500).json({ message: "Erro ao atualizar curso" });
+    }
+
+    const curso = await cursoService.findById(Number(id));
+    return res.json({ message: "Curso atualizado", curso });
+  } catch (error) {
+    console.error("Erro ao editar curso:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
+};
+
+// ✅ Excluir curso
+export const excluirCurso = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const existe = await cursoService.findById(Number(id));
+    if (!existe) {
+      return res.status(404).json({ message: "Curso não encontrado" });
+    }
+
+    const deletado = await cursoService.delete(Number(id));
+    if (!deletado) {
+      return res.status(500).json({ message: "Erro ao excluir curso" });
+    }
+
+    return res.json({ message: "Curso excluído com sucesso" });
+  } catch (error) {
+    console.error("Erro ao excluir curso:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
+};
