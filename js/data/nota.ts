@@ -3,7 +3,8 @@ import { readAnd, writeAnd } from "../core/storage.ts";
 import type { Nota } from "../core/types.ts";
 import { listAlunosByTurma } from "./aluno.ts";
 import { getTurma } from "./turma.ts";
-import { getDisciplinaById, listComponentesByDisciplina } from "./disciplina"; // careful re-export below
+import { getDisciplinaById } from "./disciplina.ts"; // careful re-export below
+import {listComponentesByDisciplina} from "./componente.ts"
 
 export function setNotaValor(idAluno: string, idComponente: string, valor: number | "" | null): void {
   writeAnd(db => {
