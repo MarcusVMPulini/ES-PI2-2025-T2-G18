@@ -15,13 +15,13 @@ export const listarCursos = async (req: Request, res: Response) => {
 // ✅ Criar curso
 export const criarCurso = async (req: Request, res: Response) => {
   try {
-    const { nomeCurso, nomeInstituicao } = req.body;
+    const { nomeCurso, idInstituicao } = req.body;
 
-    if (!nomeCurso || !nomeInstituicao) {
-      return res.status(400).json({ message: "nomeCurso e nomeInstituicao são obrigatórios" });
+    if (!nomeCurso || !idInstituicao) {
+      return res.status(400).json({ message: "nomeCurso e idInstituicao são obrigatórios" });
     }
 
-    const id = await cursoService.create(nomeCurso, nomeInstituicao);
+    const id = await cursoService.create(nomeCurso, Number(idInstituicao));
     const novo = await cursoService.findById(id);
 
     return res.status(201).json({ message: "Curso criado", curso: novo });
@@ -35,7 +35,7 @@ export const criarCurso = async (req: Request, res: Response) => {
 export const editarCurso = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { nomeCurso, nomeInstituicao } = req.body;
+    const { nomeCurso, idInstituicao } = req.body;
 
     const existe = await cursoService.findById(Number(id));
     if (!existe) {
@@ -45,7 +45,7 @@ export const editarCurso = async (req: Request, res: Response) => {
     const atualizado = await cursoService.update(
       Number(id),
       nomeCurso,
-      nomeInstituicao
+      idInstituicao ? Number(idInstituicao) : undefined
     );
 
     if (!atualizado) {

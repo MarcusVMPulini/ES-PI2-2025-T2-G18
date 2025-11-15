@@ -3,7 +3,7 @@ import { query } from "../config/database";
 export interface Curso {
   id?: number;
   nomeCurso: string;
-  nomeInstituicao: string;
+  idInstituicao: number;
 }
 
 export const cursoService = {
@@ -22,16 +22,16 @@ export const cursoService = {
   },
 
   // Criar novo curso
-  create: async (nomeCurso: string, nomeInstituicao: string): Promise<number> => {
+  create: async (nomeCurso: string, idInstituicao: number): Promise<number> => {
     const result = await query<any>(
-      "INSERT INTO cursos (nomeCurso, nomeInstituicao) VALUES (?, ?)",
-      [nomeCurso, nomeInstituicao]
+      "INSERT INTO cursos (nomeCurso, idInstituicao) VALUES (?, ?)",
+      [nomeCurso, idInstituicao]
     ) as any;
     return result.insertId;
   },
 
   // Atualizar curso
-  update: async (id: number, nomeCurso?: string, nomeInstituicao?: string): Promise<boolean> => {
+  update: async (id: number, nomeCurso?: string, idInstituicao?: number): Promise<boolean> => {
     const updates: string[] = [];
     const params: any[] = [];
 
@@ -39,9 +39,9 @@ export const cursoService = {
       updates.push("nomeCurso = ?");
       params.push(nomeCurso);
     }
-    if (nomeInstituicao !== undefined) {
-      updates.push("nomeInstituicao = ?");
-      params.push(nomeInstituicao);
+    if (idInstituicao !== undefined) {
+      updates.push("idInstituicao = ?");
+      params.push(idInstituicao);
     }
 
     if (updates.length === 0) return false;
@@ -63,20 +63,12 @@ export const cursoService = {
     return result.affectedRows > 0;
   },
 
-  // Listar cursos por instituição
-  findByInstituicao: async (nomeInstituicao: string): Promise<Curso[]> => {
+  // Listar cursos por instituição (por ID)
+  findByInstituicao: async (idInstituicao: number): Promise<Curso[]> => {
     return await query<Curso[]>(
-      "SELECT * FROM cursos WHERE nomeInstituicao = ? ORDER BY nomeCurso",
-      [nomeInstituicao]
+      "SELECT * FROM cursos WHERE idInstituicao = ? ORDER BY nomeCurso",
+      [idInstituicao]
     );
-  },
-
-  // Listar todas as instituições únicas
-  findAllInstituicoes: async (): Promise<string[]> => {
-    const results = await query<{ nomeInstituicao: string }[]>(
-      "SELECT DISTINCT nomeInstituicao FROM cursos ORDER BY nomeInstituicao"
-    );
-    return results.map(r => r.nomeInstituicao);
   },
 };
 
