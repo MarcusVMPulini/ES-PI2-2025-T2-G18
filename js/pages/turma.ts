@@ -250,7 +250,7 @@ function setupForms(): void {
   }
 
   // add componente
-  if ($formComponente) {
+  if ($formComponente!=null) {
     $formComponente.addEventListener("submit", (ev) => {
       ev.preventDefault();
       if (!disciplinaAtual) return;
