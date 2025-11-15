@@ -5,7 +5,7 @@ interface User {
 
 // Função de login
 import express from "express";
-import { pool } from "../backend/database.js";
+import { pool } from "../backend/src/config/database.ts";
 
 const router = express.Router();
 

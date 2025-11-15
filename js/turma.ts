@@ -51,20 +51,22 @@ function getQueryParam(name: string): string | null {
 // ========== Renderizações ==========
 function renderHeaderInfo(): void {
     const turmaInfo = document.getElementById("turmaInfo");
-    if (!turmaInfo || !disciplinaAtual) return;
+    if (!turmaInfo || !disciplinaAtual || !turmaAtual) return;
 
     const inst = getInstituicaoById(disciplinaAtual.instituicaoId);
+
     turmaInfo.innerHTML = `
-        <div><strong>Instituição:</strong> ${inst ? inst.nomeInstituicao : ""}</div>
-        <div><strong>Curso:</strong> ${inst ? inst.nomeCurso : ""}</div>
+        <div><strong>Instituição:</strong> ${inst?.nomeInstituicao ?? ""}</div>
+        <div><strong>Curso:</strong> ${inst?.nomeCurso ?? ""}</div>
         <div><strong>Disciplina:</strong> ${disciplinaAtual.nome} (${disciplinaAtual.sigla})</div>
-        <div><strong>Turma:</strong> ${turmaAtual ? turmaAtual.nome : ""} (${turmaAtual ? turmaAtual.apelido : ""})</div>
+        <div><strong>Turma:</strong> ${turmaAtual.nome} (${turmaAtual.apelido})</div>
     `;
 }
 
 function renderComponentesSelect(): void {
     const sel = document.getElementById("selectComponenteNotas") as HTMLSelectElement | null;
     if (!sel) return;
+
     sel.innerHTML = "";
     componentesDaDisciplina.forEach(c => {
         const o = document.createElement("option");
@@ -76,16 +78,20 @@ function renderComponentesSelect(): void {
 
 function renderTabelaNotas(): void {
     const tableWrapper = document.getElementById("areaNotas");
-    if (!tableWrapper || !turmaAtual || !disciplinaAtual) return;
+    if (!tableWrapper || !turmaAtual) return;
+
+    if (!disciplinaAtual) return;
 
     const alunos = listAlunosByTurma(turmaAtual.id);
     const comps = componentesDaDisciplina;
 
-    let html = `<table>
+    let html = `
+        <table>
         <thead>
             <tr>
                 <th>Matrícula</th>
-                <th>Nome</th>`;
+                <th>Nome</th>
+    `;
 
     comps.forEach(c => {
         html += `<th>${c.sigla}</th>`;
@@ -94,27 +100,31 @@ function renderTabelaNotas(): void {
     html += `<th>Média Final</th></tr></thead><tbody>`;
 
     alunos.forEach(al => {
-        html += `<tr data-aluno="${al.id}">
+        html += `
+        <tr data-aluno="${al.id}">
             <td>${al.matricula}</td>
-            <td>${al.nome}</td>`;
+            <td>${al.nome}</td>
+        `;
 
         let soma = 0;
         let count = 0;
 
         comps.forEach(c => {
             const valor = getNotaValor(al.id, c.id);
-            const num = valor !== "" ? parseFloat(valor) : NaN;
+            const num = valor && !isNaN(Number(valor)) ? Number(valor) : NaN;
+
             if (!isNaN(num)) {
                 soma += num;
                 count++;
             }
+
             html += `
                 <td>
                     <input 
                         type="number" 
                         min="0" max="10" step="0.01"
                         data-comp="${c.id}" 
-                        value="${valor !== "" ? valor : ""}"
+                        value="${valor ?? ""}"
                     />
                 </td>`;
         });
@@ -123,44 +133,46 @@ function renderTabelaNotas(): void {
         html += `<td>${media}</td></tr>`;
     });
 
-    html += `</tbody></table>
-    <div class="notice">
-        Importante: você só pode editar UM componente por vez no salvamento.<br>
-        Selecione abaixo qual componente está atualizando agora e clique "Salvar notas do componente".
-    </div>
-    <div style="margin-top:12px;">
-        <label for="selectComponenteNotas">Componente que estou editando agora:</label>
-        <select id="selectComponenteNotas"></select>
-        <button id="btnSalvarComponente">Salvar notas do componente</button>
-    </div>`;
+    html += `
+        </tbody></table>
+        <div class="notice">
+            Importante: você só pode editar UM componente por vez.
+        </div>
+        <div style="margin-top:12px;">
+            <label for="selectComponenteNotas">Componente:</label>
+            <select id="selectComponenteNotas"></select>
+            <button id="btnSalvarComponente">Salvar notas</button>
+        </div>
+    `;
 
     tableWrapper.innerHTML = html;
+
     renderComponentesSelect();
 
     const btnSalvar = document.getElementById("btnSalvarComponente") as HTMLButtonElement | null;
-    if (!btnSalvar) return;
+    const sel = document.getElementById("selectComponenteNotas") as HTMLSelectElement | null;
+    if (!btnSalvar || !sel) return;
 
     btnSalvar.addEventListener("click", () => {
-        const sel = document.getElementById("selectComponenteNotas") as HTMLSelectElement;
         const compId = sel.value;
         const linhas = tableWrapper.querySelectorAll<HTMLTableRowElement>("tbody tr");
 
         linhas.forEach(linha => {
             const alunoId = linha.getAttribute("data-aluno");
             if (!alunoId) return;
+
             const inp = linha.querySelector<HTMLInputElement>(`input[data-comp="${compId}"]`);
-            if (inp) {
-                const v = inp.value.trim();
-                if (v !== "") {
-                    const num = parseFloat(v);
-                    if (!isNaN(num)) {
-                        setNotaValor(alunoId, compId, num);
-                    }
-                } else {
-                    setNotaValor(alunoId, compId, "");
-                }
+            if (!inp) return;
+
+            const v = inp.value.trim();
+
+            if (v !== "" && !isNaN(Number(v))) {
+                setNotaValor(alunoId, compId, Number(v));
+            } else {
+                setNotaValor(alunoId, compId, "");
             }
         });
+
         renderTabelaNotas();
     });
 }
@@ -168,7 +180,9 @@ function renderTabelaNotas(): void {
 function renderListaComponentes(): void {
     const compList = document.getElementById("listaComponentes");
     if (!compList) return;
+
     compList.innerHTML = "";
+
     componentesDaDisciplina.forEach(c => {
         const div = document.createElement("div");
         div.className = "card-item";
@@ -185,58 +199,79 @@ function renderListaComponentes(): void {
 function setupFormsTurma(): void {
     if (!turmaAtual || !disciplinaAtual) return;
 
+    // Form aluno
     const fAluno = document.getElementById("formAluno") as HTMLFormElement | null;
     if (fAluno) {
         fAluno.addEventListener("submit", e => {
             e.preventDefault();
-            const matricula = (fAluno.querySelector<HTMLInputElement>("[name='matricula']")?.value || "").trim();
-            const nome = (fAluno.querySelector<HTMLInputElement>("[name='nome']")?.value || "").trim();
-            addAluno(turmaAtual.id, matricula, nome);
+            const matricula = (fAluno.querySelector<HTMLInputElement>("[name='matricula']")?.value ?? "").trim();
+            const nome = (fAluno.querySelector<HTMLInputElement>("[name='nome']")?.value ?? "").trim();
+
+            if (!matricula || !nome) return;
+
+            addAluno(turmaAtual!.id, matricula, nome);
             fAluno.reset();
             renderTabelaNotas();
         });
     }
 
+    // Import CSV
     const fCSV = document.getElementById("formImportCSV") as HTMLFormElement | null;
     if (fCSV) {
         fCSV.addEventListener("submit", e => {
             e.preventDefault();
-            const fileInput = document.getElementById("csvFile") as HTMLInputElement;
-            const file = fileInput.files?.[0];
+
+            const fileInput = document.getElementById("csvFile") as HTMLInputElement | null;
+            const file = fileInput?.files?.[0];
+
             if (!file) {
-                alert("Selecione um arquivo CSV primeiro.");
+                alert("Selecione um arquivo CSV.");
                 return;
             }
+
             const reader = new FileReader();
             reader.onload = evt => {
-                importCSVToTurma(turmaAtual.id, evt.target?.result as string);
-                renderTabelaNotas();
+                const text = evt.target?.result;
+                if (typeof text === "string") {
+                    importCSVToTurma(turmaAtual!.id, text);
+                    renderTabelaNotas();
+                }
             };
             reader.readAsText(file);
-            fileInput.value = "";
+
+            if (fileInput) fileInput.value = "";
         });
     }
 
+    // Criar componente
     const fComp = document.getElementById("formComponente") as HTMLFormElement | null;
     if (fComp) {
         fComp.addEventListener("submit", e => {
             e.preventDefault();
-            const nome = (fComp.querySelector<HTMLInputElement>("[name='nomeComp']")?.value || "").trim();
-            const sigla = (fComp.querySelector<HTMLInputElement>("[name='sigla']")?.value || "").trim();
-            const descricao = (fComp.querySelector<HTMLInputElement>("[name='descricao']")?.value || "").trim();
+            if (!disciplinaAtual) return;
+
+            const nome = (fComp.querySelector<HTMLInputElement>("[name='nomeComp']")?.value ?? "").trim();
+            const sigla = (fComp.querySelector<HTMLInputElement>("[name='sigla']")?.value ?? "").trim();
+            const descricao = (fComp.querySelector<HTMLInputElement>("[name='descricao']")?.value ?? "").trim();
+
             addComponente(disciplinaAtual.id, nome, sigla, descricao);
             fComp.reset();
+
             componentesDaDisciplina = listComponentesByDisciplina(disciplinaAtual.id);
             renderListaComponentes();
             renderTabelaNotas();
         });
     }
 
+    // Export CSV
     const btnExport = document.getElementById("btnExportCSV") as HTMLButtonElement | null;
     if (btnExport) {
         btnExport.addEventListener("click", () => {
+            if (!turmaAtual || !disciplinaAtual) return;
+
             const alunos = listAlunosByTurma(turmaAtual.id);
             const comps = listComponentesByDisciplina(disciplinaAtual.id);
+
             let pode = true;
 
             alunos.forEach(a => {
@@ -249,7 +284,7 @@ function setupFormsTurma(): void {
             });
 
             if (!pode) {
-                alert("Para exportar: todas as notas precisam estar lançadas para todos os alunos.");
+                alert("Todas as notas precisam estar lançadas.");
                 return;
             }
 
@@ -264,7 +299,13 @@ function initTurma(): void {
     handleLogoutBtn();
 
     const turmaId = getQueryParam("turmaId");
-    turmaAtual = turmaId ? getTurma(turmaId) : null;
+    if (!turmaId) {
+        alert("Turma inválida.");
+        window.location.href = "dashboard.html";
+        return;
+    }
+
+    turmaAtual = getTurma(turmaId);
     if (!turmaAtual) {
         alert("Turma não encontrada");
         window.location.href = "dashboard.html";
@@ -272,6 +313,11 @@ function initTurma(): void {
     }
 
     disciplinaAtual = getDisciplinaById(turmaAtual.disciplinaId);
+    if (!disciplinaAtual) {
+        alert("Disciplina não encontrada");
+        return;
+    }
+
     componentesDaDisciplina = listComponentesByDisciplina(disciplinaAtual.id);
 
     renderHeaderInfo();
@@ -281,3 +327,4 @@ function initTurma(): void {
 }
 
 document.addEventListener("DOMContentLoaded", initTurma);
+
