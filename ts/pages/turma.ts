@@ -23,16 +23,16 @@ let disciplinaAtual: Disciplina | null = null;
 let componentesDaDisciplina: Componente[] = [];
 
 // DOM cached nodes
-let $turmaInfo: HTMLElement | null = null;
-let $listaComponentes: HTMLElement | null = null;
-let $areaNotas: HTMLElement | null = null;
-let $formAluno: HTMLFormElement | null = null;
-let $formCSV: HTMLFormElement | null = null;
-let $fileInput: HTMLInputElement | null = null;
-let $formComponente: HTMLFormElement | null = null;
-let $btnExportCSV: HTMLButtonElement | null = null;
-let $selectComponenteNotas: HTMLSelectElement | null = null;
-let $btnSalvarComponente: HTMLButtonElement | null = null;
+let $turmaInfo = document.getElementById("turmaInfo")!;
+let $listaComponentes = document.getElementById("listaComponentes")!;
+let $areaNotas = document.getElementById("areaNotas")!;
+let $formAluno = document.getElementById("formAluno") as HTMLFormElement;
+let $formCSV = document.getElementById("formCSV") as HTMLFormElement;
+let $fileInput = document.getElementById("fileInput") as HTMLInputElement;
+let $formComponente = document.getElementById("formComponente") as HTMLFormElement;
+let $btnExportCSV = document.getElementById("btnExportCSV") as HTMLButtonElement;
+let $selectComponenteNotas = document.getElementById("selectComponenteNotas") as HTMLSelectElement;
+let $btnSalvarComponente = document.getElementById("btnSalvarComponente") as HTMLButtonElement;
 
 // ---------- Utilitários ----------
 function getQueryParam(name: string): string | null {
@@ -132,8 +132,8 @@ function renderTabelaNotas(): void {
   $areaNotas.innerHTML = html;
 
   // re-cache selects/button dentro da área (eles são recriados)
-  $selectComponenteNotas = document.getElementById("selectComponenteNotas") as HTMLSelectElement | null;
-  $btnSalvarComponente = document.getElementById("btnSalvarComponente") as HTMLButtonElement | null;
+  $selectComponenteNotas = document.getElementById("selectComponenteNotas") as HTMLSelectElement;
+  $btnSalvarComponente = document.getElementById("btnSalvarComponente") as HTMLButtonElement;
   renderComponentesSelect();
 
   // manter listener de input via delegação (colocado em init)
@@ -250,7 +250,7 @@ function setupForms(): void {
   }
 
   // add componente
-  if ($formComponente!=null) {
+  if ($formComponente) {
     $formComponente.addEventListener("submit", (ev) => {
       ev.preventDefault();
       if (!disciplinaAtual) return;
@@ -300,19 +300,7 @@ function setupForms(): void {
 }
 
 // ---------- Init / bootstrap ----------
-function cacheDom(): void {
-  $turmaInfo = document.getElementById("turmaInfo");
-  $listaComponentes = document.getElementById("listaComponentes");
-  $areaNotas = document.getElementById("areaNotas");
-  $formAluno = document.getElementById("formAluno") as HTMLFormElement | null;
-  $formCSV = document.getElementById("formImportCSV") as HTMLFormElement | null;
-  $fileInput = document.getElementById("csvFile") as HTMLInputElement | null;
-  $formComponente = document.getElementById("formComponente") as HTMLFormElement | null;
-  $btnExportCSV = document.getElementById("btnExportCSV") as HTMLButtonElement | null;
-  // note: select/button inside areaNotas are created dynamically in renderTabelaNotas
-  $selectComponenteNotas = document.getElementById("selectComponenteNotas") as HTMLSelectElement | null;
-  $btnSalvarComponente = document.getElementById("btnSalvarComponente") as HTMLButtonElement | null;
-}
+
 
 function attachGlobalDelegation(): void {
   // delegation for inputs inside table
@@ -323,7 +311,7 @@ export function initTurmaPage(): void {
   requireAuth();
   handleLogoutBtn();
 
-  cacheDom();
+  
   attachGlobalDelegation();
 
   const turmaId = getQueryParam("turmaId");
@@ -343,8 +331,8 @@ export function initTurmaPage(): void {
   renderTabelaNotas();
 
   // cache newly created controls from renderTabelaNotas
-  $selectComponenteNotas = document.getElementById("selectComponenteNotas") as HTMLSelectElement | null;
-  $btnSalvarComponente = document.getElementById("btnSalvarComponente") as HTMLButtonElement | null;
+  $selectComponenteNotas = document.getElementById("selectComponenteNotas") as HTMLSelectElement;
+  $btnSalvarComponente = document.getElementById("btnSalvarComponente") as HTMLButtonElement;
 
   setupForms();
   // if save button exists, attach it
