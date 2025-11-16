@@ -1,0 +1,179 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#login {
+    margin: 0 auto;
+    margin-top: 220px;
+    width: 450px;
+    /* Aumentado de 420px para 450px para acomodar os inputs maiores */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
+
+/* Estilização específica dos labels por ID */
+label[for="inputemail"],
+label[for="inputPassword6"] {
+    font-weight: 700 !important;
+    color: #495057 !important;
+    white-space: nowrap !important;
+    width: 80px !important;
+    text-align: right !important;
+    padding-right: 1px !important;
+}
+
+/* Estilização específica por ID para garantir que as regras sejam aplicadas */
+#inputemail,
+#inputPassword6 {
+    border-radius: 0.3rem;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    height: 45px;
+    width: 280px;
+    /* Forçando largura de 280px nos inputs de e-mail e senha */
+}
+
+/* Estilo de foco específico por ID */
+#inputemail:focus,
+#inputPassword6:focus {
+    border-color: #86b7fe !important;
+    outline: 0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+.form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: 0.8rem;
+}
+
+/* Alinhar spans na posição correta */
+.form-group .form-text {
+    margin-left: 105px;
+}
+
+#switchCheckDefault {
+    margin-left: 65px;
+    /* Aumentado de 1px para 15px para mover o checkbox mais para a direita */
+
+}
+
+/* Estilização do label do checkbox para melhor posicionamento */
+.form-check-label {
+    margin-left: 5px;
+    /* Pequeno espaçamento entre o checkbox e o texto "Lembre-me" */
+}
+
+/* Estilização específica do link "Esqueci a senha" */
+#forgotpassword {
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: -140px;
+}
+
+#forgotpassword:hover {
+    text-decoration: underline;
+}
+
+/* Estilização específica do link "Criar Conta" */
+#createacount {
+    text-decoration: none;
+    font-weight: 500;
+    color: rgb(95, 95, 95);
+    margin-left: 55px;
+    /* Movendo o link mais para a direita */
+}
+
+
+#createacount:hover {
+    text-decoration: underline;
+    color: black;
+    /* Cor do Bootstrap para links */
+}
+
+#BackLogin {
+    text-decoration: none;
+    font-weight: 500;
+    color: rgb(95, 95, 95);
+    margin-left: 55px;
+    /* Movendo o link mais para a direita */
+}
+
+#BackLogin:hover {
+    text-decoration: underline;
+    color: black;
+    /* Cor do Bootstrap para links */
+}
+
+#login button {
+    margin-left: 50px;
+    margin-top: 15px;
+    width: 180px;
+}
+
+/* Adicionando espaçamento entre o botão e o link "Criar Conta" */
+#login .row:has(button) {
+    margin-bottom: 5px;
+    /* Espaçamento abaixo do botão para empurrar o link para baixo */
+}
+
+#cadastro {
+    margin: 0 auto;
+    margin-top: 220px;
+    width: 450px;
+    /* Aumentado de 420px para 450px para acomodar os inputs maiores */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
+
+/* Ainda arrumar para ficar os inputs alinhadso no css*/
+#inputemailCadastro,
+#inputPasswordCadastro {
+    border-radius: 0.3rem;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    height: 45px;
+    width: 280px;
+    /* Forçando largura de 280px nos inputs de e-mail e senha */
+}
+
+#EsqueciSenha {
+    margin: 0 auto;
+    margin-top: 220px;
+    width: 450px;
+    /* Aumentado de 420px para 450px para acomodar os inputs maiores */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
+
+#inputemailEsqueciSenha {
+    border-radius: 0.3rem;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    height: 45px;
+    width: 280px;
+}
+
+#info {
+
+    /* Aumentado de 420px para 450px para acomodar os inputs maiores */
+    padding: 20px;
+
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
