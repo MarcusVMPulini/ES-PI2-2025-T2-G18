@@ -9,6 +9,8 @@ import alunoRoutes from "./aluno.routes";
 import matriculaRoutes from "./matricula.routes";
 import notasRoutes from "./notas.routes";
 import boletimRoutes from "./boletim.routes";
+import componenteNotaRoutes from "./componente-nota.routes";
+import notaComponenteRoutes from "./nota-componente.routes";
 
 const router = Router();
 
@@ -29,6 +31,8 @@ router.use("/alunos", alunoRoutes);
 router.use("/matriculas", matriculaRoutes);
 router.use("/notas", notasRoutes);
 router.use("/boletim", boletimRoutes);
+router.use("/componentes-nota", componenteNotaRoutes);
+router.use("/notas-componente", notaComponenteRoutes);
 
 
 

@@ -6,6 +6,8 @@ export interface Turma {
   idDisciplina: number;
   ano: number;
   semestre: number;
+  codigo?: string;
+  apelido?: string;
 }
 
 export const turmaService = {
@@ -28,11 +30,13 @@ export const turmaService = {
     nome: string,
     idDisciplina: number,
     ano: number,
-    semestre: number
+    semestre: number,
+    codigo?: string,
+    apelido?: string
   ): Promise<number> => {
     const result = await query<any>(
-      "INSERT INTO turmas (nome, idDisciplina, ano, semestre) VALUES (?, ?, ?, ?)",
-      [nome, idDisciplina, ano, semestre]
+      "INSERT INTO turmas (nome, idDisciplina, ano, semestre, codigo, apelido) VALUES (?, ?, ?, ?, ?, ?)",
+      [nome, idDisciplina, ano, semestre, codigo || null, apelido || null]
     ) as any;
     return result.insertId;
   },
@@ -43,7 +47,9 @@ export const turmaService = {
     nome?: string,
     idDisciplina?: number,
     ano?: number,
-    semestre?: number
+    semestre?: number,
+    codigo?: string,
+    apelido?: string
   ): Promise<boolean> => {
     const updates: string[] = [];
     const params: any[] = [];
@@ -63,6 +69,14 @@ export const turmaService = {
     if (semestre !== undefined) {
       updates.push("semestre = ?");
       params.push(semestre);
+    }
+    if (codigo !== undefined) {
+      updates.push("codigo = ?");
+      params.push(codigo);
+    }
+    if (apelido !== undefined) {
+      updates.push("apelido = ?");
+      params.push(apelido);
     }
 
     if (updates.length === 0) return false;
@@ -90,6 +104,22 @@ export const turmaService = {
       "SELECT * FROM turmas WHERE idDisciplina = ? ORDER BY ano DESC, semestre DESC",
       [idDisciplina]
     );
+  },
+
+  // Verificar se turma tem dependências (matrículas, notas)
+  hasDependencies: async (id: number): Promise<{ hasMatriculas: boolean; hasNotas: boolean }> => {
+    const matriculas = await query<any[]>(
+      "SELECT COUNT(*) as count FROM matriculas WHERE idTurma = ?",
+      [id]
+    );
+    const notas = await query<any[]>(
+      "SELECT COUNT(*) as count FROM notas_componentes WHERE idTurma = ?",
+      [id]
+    );
+    return {
+      hasMatriculas: matriculas[0]?.count > 0,
+      hasNotas: notas[0]?.count > 0,
+    };
   },
 };
 
