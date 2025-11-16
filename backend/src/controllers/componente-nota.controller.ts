@@ -25,7 +25,7 @@ export const criarComponente = async (req: Request, res: Response) => {
     }
 
     // Verificar se disciplina existe
-    const disciplina = await disciplinaService.findById(Number(idDisciplina));
+    const disciplina = await disciplinaService.findById(Number(idDisciplina), (req as any).user.id);
     if (!disciplina) {
       return res.status(404).json({ message: "Disciplina não encontrada" });
     }

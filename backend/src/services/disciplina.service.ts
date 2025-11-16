@@ -11,28 +11,51 @@ export interface Disciplina {
 }
 
 export const disciplinaService = {
-  // Listar todas as disciplinas
-  findAll: async (): Promise<Disciplina[]> => {
-    return await query<Disciplina[]>("SELECT * FROM disciplinas ORDER BY id");
+  // Listar todas as disciplinas dos cursos do usuário
+  findAll: async (idUsuario: number): Promise<Disciplina[]> => {
+    return await query<Disciplina[]>(
+      `SELECT d.* FROM disciplinas d
+       INNER JOIN cursos c ON d.idCurso = c.id
+       INNER JOIN instituicoes i ON c.idInstituicao = i.id
+       WHERE i.idUsuario = ?
+       ORDER BY d.id`,
+      [idUsuario]
+    );
   },
 
-  // Buscar disciplina por ID
-  findById: async (id: number): Promise<Disciplina | null> => {
+  // Buscar disciplina por ID (verificando se pertence a um curso do usuário)
+  findById: async (id: number, idUsuario: number): Promise<Disciplina | null> => {
     const results = await query<Disciplina[]>(
-      "SELECT * FROM disciplinas WHERE id = ?",
-      [id]
+      `SELECT d.* FROM disciplinas d
+       INNER JOIN cursos c ON d.idCurso = c.id
+       INNER JOIN instituicoes i ON c.idInstituicao = i.id
+       WHERE d.id = ? AND i.idUsuario = ?`,
+      [id, idUsuario]
     );
     return results.length > 0 ? results[0] : null;
   },
 
-  // Criar nova disciplina
+  // Criar nova disciplina (verificando se o curso pertence ao usuário)
   create: async (
     nome: string,
     idCurso: number,
+    idUsuario: number,
     sigla?: string,
     codigo?: string,
     periodo?: string
   ): Promise<number> => {
+    // Verificar se o curso pertence a uma instituição do usuário
+    const curso = await query<any>(
+      `SELECT c.id FROM cursos c
+       INNER JOIN instituicoes i ON c.idInstituicao = i.id
+       WHERE c.id = ? AND i.idUsuario = ?`,
+      [idCurso, idUsuario]
+    );
+    
+    if (!curso || curso.length === 0) {
+      throw new Error("Curso não encontrado ou não pertence ao usuário");
+    }
+
     const result = await query<any>(
       "INSERT INTO disciplinas (nome, idCurso, sigla, codigo, periodo) VALUES (?, ?, ?, ?, ?)",
       [nome, idCurso, sigla || null, codigo || null, periodo || null]
@@ -40,9 +63,10 @@ export const disciplinaService = {
     return result.insertId;
   },
 
-  // Atualizar disciplina
+  // Atualizar disciplina (verificando se pertence a um curso do usuário)
   update: async (
     id: number,
+    idUsuario: number,
     nome?: string,
     idCurso?: number,
     sigla?: string,
@@ -50,6 +74,31 @@ export const disciplinaService = {
     periodo?: string,
     formula_nota_final?: string
   ): Promise<boolean> => {
+    // Verificar se a disciplina pertence a um curso do usuário
+    const disciplinaResults = await query<Disciplina[]>(
+      `SELECT d.* FROM disciplinas d
+       INNER JOIN cursos c ON d.idCurso = c.id
+       INNER JOIN instituicoes i ON c.idInstituicao = i.id
+       WHERE d.id = ? AND i.idUsuario = ?`,
+      [id, idUsuario]
+    );
+    if (!disciplinaResults || disciplinaResults.length === 0) {
+      return false;
+    }
+    const disciplina = disciplinaResults[0];
+
+    // Se estiver mudando o curso, verificar se o novo pertence ao usuário
+    if (idCurso !== undefined && idCurso !== disciplina.idCurso) {
+      const curso = await query<any>(
+        `SELECT c.id FROM cursos c
+         INNER JOIN instituicoes i ON c.idInstituicao = i.id
+         WHERE c.id = ? AND i.idUsuario = ?`,
+        [idCurso, idUsuario]
+      );
+      if (!curso || curso.length === 0) {
+        return false;
+      }
+    }
     const updates: string[] = [];
     const params: any[] = [];
 
@@ -88,8 +137,20 @@ export const disciplinaService = {
     return result.affectedRows > 0;
   },
 
-  // Excluir disciplina
-  delete: async (id: number): Promise<boolean> => {
+  // Excluir disciplina (verificando se pertence a um curso do usuário)
+  delete: async (id: number, idUsuario: number): Promise<boolean> => {
+    // Verificar se a disciplina pertence a um curso do usuário
+    const disciplinaResults = await query<Disciplina[]>(
+      `SELECT d.* FROM disciplinas d
+       INNER JOIN cursos c ON d.idCurso = c.id
+       INNER JOIN instituicoes i ON c.idInstituicao = i.id
+       WHERE d.id = ? AND i.idUsuario = ?`,
+      [id, idUsuario]
+    );
+    if (!disciplinaResults || disciplinaResults.length === 0) {
+      return false;
+    }
+
     const result = await query<any>(
       "DELETE FROM disciplinas WHERE id = ?",
       [id]

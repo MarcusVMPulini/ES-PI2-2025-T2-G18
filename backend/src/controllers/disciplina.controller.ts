@@ -3,10 +3,15 @@ import { disciplinaService } from "../services/disciplina.service";
 import { cursoService } from "../services/curso.service";
 import { query } from "../config/database";
 
-// ✅ Listar
+// ✅ Listar disciplinas dos cursos do usuário
 export const listarDisciplinas = async (req: Request, res: Response) => {
   try {
-    const disciplinas = await disciplinaService.findAll();
+    const user = (req as any).user;
+    if (!user || !user.id) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
+
+    const disciplinas = await disciplinaService.findAll(user.id);
     return res.json(disciplinas);
   } catch (error) {
     console.error("Erro ao listar disciplinas:", error);
@@ -14,11 +19,16 @@ export const listarDisciplinas = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Buscar disciplina por ID
+// ✅ Buscar disciplina por ID (verificando se pertence ao usuário)
 export const buscarDisciplinaPorId = async (req: Request, res: Response) => {
   try {
+    const user = (req as any).user;
+    if (!user || !user.id) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
+
     const { id } = req.params;
-    const disciplina = await disciplinaService.findById(Number(id));
+    const disciplina = await disciplinaService.findById(Number(id), user.id);
     
     if (!disciplina) {
       return res.status(404).json({ message: "Disciplina não encontrada" });
@@ -31,16 +41,21 @@ export const buscarDisciplinaPorId = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Criar
+// ✅ Criar disciplina (verificando se o curso pertence ao usuário)
 export const criarDisciplina = async (req: Request, res: Response) => {
   try {
+    const user = (req as any).user;
+    if (!user || !user.id) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
+
     const { nome, idCurso, sigla, codigo, periodo } = req.body;
 
     if (!nome || !idCurso) {
       return res.status(400).json({ message: "Nome e idCurso são obrigatórios" });
     }
 
-    const existeCurso = await cursoService.findById(Number(idCurso));
+    const existeCurso = await cursoService.findById(Number(idCurso), user.id);
     if (!existeCurso) {
       return res.status(404).json({ message: "Curso não encontrado" });
     }
@@ -48,32 +63,45 @@ export const criarDisciplina = async (req: Request, res: Response) => {
     const id = await disciplinaService.create(
       nome,
       Number(idCurso),
+      user.id,
       sigla,
       codigo,
       periodo
     );
-    const nova = await disciplinaService.findById(id);
+    const nova = await disciplinaService.findById(id, user.id);
+
+    if (!nova) {
+      return res.status(404).json({ message: "Disciplina não encontrada após criação" });
+    }
 
     return res.status(201).json({ message: "Disciplina criada", disciplina: nova });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erro ao criar disciplina:", error);
+    if (error.message && error.message.includes("não pertence ao usuário")) {
+      return res.status(403).json({ message: error.message });
+    }
     return res.status(500).json({ message: "Erro interno do servidor" });
   }
 };
 
-// ✅ Editar
+// ✅ Editar disciplina (verificando se pertence ao usuário)
 export const editarDisciplina = async (req: Request, res: Response) => {
   try {
+    const user = (req as any).user;
+    if (!user || !user.id) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
+
     const { id } = req.params;
     const { nome, idCurso, sigla, codigo, periodo, formula_nota_final } = req.body;
 
-    const existe = await disciplinaService.findById(Number(id));
+    const existe = await disciplinaService.findById(Number(id), user.id);
     if (!existe) {
       return res.status(404).json({ message: "Disciplina não encontrada" });
     }
 
     if (idCurso) {
-      const existeCurso = await cursoService.findById(Number(idCurso));
+      const existeCurso = await cursoService.findById(Number(idCurso), user.id);
       if (!existeCurso) {
         return res.status(404).json({ message: "Curso não encontrado" });
       }
@@ -81,6 +109,7 @@ export const editarDisciplina = async (req: Request, res: Response) => {
 
     const atualizado = await disciplinaService.update(
       Number(id),
+      user.id,
       nome,
       idCurso ? Number(idCurso) : undefined,
       sigla,
@@ -93,7 +122,7 @@ export const editarDisciplina = async (req: Request, res: Response) => {
       return res.status(500).json({ message: "Erro ao atualizar disciplina" });
     }
 
-    const disciplina = await disciplinaService.findById(Number(id));
+    const disciplina = await disciplinaService.findById(Number(id), user.id);
     return res.json({
       message: "Disciplina atualizada",
       disciplina,
@@ -104,12 +133,17 @@ export const editarDisciplina = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Excluir
+// ✅ Excluir disciplina (verificando se pertence ao usuário)
 export const excluirDisciplina = async (req: Request, res: Response) => {
   try {
+    const user = (req as any).user;
+    if (!user || !user.id) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
+
     const { id } = req.params;
 
-    const existe = await disciplinaService.findById(Number(id));
+    const existe = await disciplinaService.findById(Number(id), user.id);
     if (!existe) {
       return res.status(404).json({ message: "Disciplina não encontrada" });
     }
@@ -125,7 +159,7 @@ export const excluirDisciplina = async (req: Request, res: Response) => {
       });
     }
 
-    const deletado = await disciplinaService.delete(Number(id));
+    const deletado = await disciplinaService.delete(Number(id), user.id);
     if (!deletado) {
       return res.status(500).json({ message: "Erro ao excluir disciplina" });
     }
@@ -137,13 +171,18 @@ export const excluirDisciplina = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Definir fórmula de nota final
+// ✅ Definir fórmula de nota final (verificando se pertence ao usuário)
 export const definirFormulaNotaFinal = async (req: Request, res: Response) => {
   try {
+    const user = (req as any).user;
+    if (!user || !user.id) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
+
     const { id } = req.params;
     const { formula_nota_final } = req.body;
 
-    const existe = await disciplinaService.findById(Number(id));
+    const existe = await disciplinaService.findById(Number(id), user.id);
     if (!existe) {
       return res.status(404).json({ message: "Disciplina não encontrada" });
     }
@@ -173,6 +212,7 @@ export const definirFormulaNotaFinal = async (req: Request, res: Response) => {
 
     const atualizado = await disciplinaService.update(
       Number(id),
+      user.id,
       undefined,
       undefined,
       undefined,
@@ -185,7 +225,7 @@ export const definirFormulaNotaFinal = async (req: Request, res: Response) => {
       return res.status(500).json({ message: "Erro ao atualizar fórmula" });
     }
 
-    const disciplina = await disciplinaService.findById(Number(id));
+    const disciplina = await disciplinaService.findById(Number(id), user.id);
     return res.json({
       message: "Fórmula de nota final definida",
       disciplina,

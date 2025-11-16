@@ -197,7 +197,8 @@ export const notaComponenteService = {
   // Calcular nota final para um aluno em uma turma
   calcularNotaFinalAluno: async (
     idAluno: number,
-    idTurma: number
+    idTurma: number,
+    user: any
   ): Promise<{ notaFinal: number; situacao: string }> => {
     // Buscar turma para pegar disciplina
     const turma = await query<any[]>(
@@ -208,7 +209,7 @@ export const notaComponenteService = {
       throw new Error("Turma não encontrada");
     }
 
-    const disciplina = await disciplinaService.findById(turma[0].idDisciplina);
+    const disciplina = await disciplinaService.findById(turma[0].idDisciplina, user.id);
     if (!disciplina) {
       throw new Error("Disciplina não encontrada");
     }

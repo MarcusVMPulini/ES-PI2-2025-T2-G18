@@ -7,6 +7,7 @@ import { notaComponenteService } from "../services/nota-componente.service";
 import { componenteNotaService } from "../services/componente-nota.service";
 import { query } from "../config/database";
 
+
 // ✅ Listar todas as turmas
 export const listarTurmas = async (req: Request, res: Response) => {
   try {
@@ -45,7 +46,7 @@ export const criarTurma = async (req: Request, res: Response) => {
     }
 
     // Verificar se a disciplina existe
-    const existeDisciplina = await disciplinaService.findById(Number(idDisciplina));
+    const existeDisciplina = await disciplinaService.findById(Number(idDisciplina), (req as any).user.id);
     if (!existeDisciplina) {
       return res.status(404).json({ message: "Disciplina não encontrada" });
     }
@@ -80,7 +81,7 @@ export const editarTurma = async (req: Request, res: Response) => {
 
     // Se estiver alterando a disciplina, verificar se existe
     if (idDisciplina) {
-      const existeDisciplina = await disciplinaService.findById(Number(idDisciplina));
+      const existeDisciplina = await disciplinaService.findById(Number(idDisciplina), (req as any).user.id);
       if (!existeDisciplina) {
         return res.status(404).json({ message: "Disciplina não encontrada" });
       }
@@ -227,7 +228,7 @@ export const exportarNotasCSV = async (req: Request, res: Response) => {
     }
 
     // Buscar disciplina para pegar componentes e sigla
-    const disciplina = await disciplinaService.findById(turma.idDisciplina);
+    const disciplina = await disciplinaService.findById(turma.idDisciplina, (req as any).user.id);
     if (!disciplina) {
       return res.status(404).json({ message: "Disciplina não encontrada" });
     }
@@ -258,7 +259,8 @@ export const exportarNotasCSV = async (req: Request, res: Response) => {
       // Calcular nota final
       const { notaFinal } = await notaComponenteService.calcularNotaFinalAluno(
         alunoId,
-        Number(idTurma)
+        Number(idTurma),
+        (req as any).user
       );
 
       // Montar objeto com RA, Nome e notas por componente

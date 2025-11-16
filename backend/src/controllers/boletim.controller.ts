@@ -24,10 +24,10 @@ export const boletimPorAluno = async (req: Request, res: Response) => {
         const turma = await turmaService.findById(nota.idTurma);
         if (!turma) return null;
 
-        const disciplina = await disciplinaService.findById(turma.idDisciplina);
+        const disciplina = await disciplinaService.findById(turma.idDisciplina, (req as any).user.id);
         if (!disciplina) return null;
 
-        const curso = await cursoService.findById(disciplina.idCurso);
+        const curso = await cursoService.findById(disciplina.idCurso, (req as any).user.id);
         if (!curso) return null;
 
         return {

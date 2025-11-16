@@ -134,7 +134,8 @@ export const calcularNotaFinal = async (req: Request, res: Response) => {
 
     const resultado = await notaComponenteService.calcularNotaFinalAluno(
       Number(idAluno),
-      Number(idTurma)
+      Number(idTurma),
+      (req as any).user
     );
 
     return res.json(resultado);
