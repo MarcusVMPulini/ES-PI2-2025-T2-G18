@@ -18,6 +18,23 @@ export const listarTurmas = async (req: Request, res: Response) => {
   }
 };
 
+// ✅ Buscar turma por ID
+export const buscarTurmaPorId = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const turma = await turmaService.findById(Number(id));
+    
+    if (!turma) {
+      return res.status(404).json({ message: "Turma não encontrada" });
+    }
+    
+    return res.json(turma);
+  } catch (error) {
+    console.error("Erro ao buscar turma:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
+};
+
 // ✅ Criar turma
 export const criarTurma = async (req: Request, res: Response) => {
   try {

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
 import {
   listarDisciplinas,
+  buscarDisciplinaPorId,
   criarDisciplina,
   editarDisciplina,
   excluirDisciplina,
@@ -17,6 +18,7 @@ router.put("/:id/formula", definirFormulaNotaFinal);
 
 // Rotas gerais
 router.get("/", listarDisciplinas);
+router.get("/:id", buscarDisciplinaPorId);
 router.post("/", criarDisciplina);
 router.put("/:id", editarDisciplina);
 router.delete("/:id", excluirDisciplina);

@@ -35,5 +35,19 @@ export const authService = {
     );
     return results.length > 0 ? results[0] : null;
   },
+
+  // Atualizar senha do usuário
+  updatePassword: async (id: number, hashedPassword: string): Promise<boolean> => {
+    try {
+      await query(
+        "UPDATE usuarios SET senha = ? WHERE id = ?",
+        [hashedPassword, id]
+      );
+      return true;
+    } catch (error) {
+      console.error("Erro ao atualizar senha:", error);
+      return false;
+    }
+  },
 };
 

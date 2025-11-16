@@ -14,6 +14,23 @@ export const listarDisciplinas = async (req: Request, res: Response) => {
   }
 };
 
+// ✅ Buscar disciplina por ID
+export const buscarDisciplinaPorId = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const disciplina = await disciplinaService.findById(Number(id));
+    
+    if (!disciplina) {
+      return res.status(404).json({ message: "Disciplina não encontrada" });
+    }
+    
+    return res.json(disciplina);
+  } catch (error) {
+    console.error("Erro ao buscar disciplina:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
+};
+
 // ✅ Criar
 export const criarDisciplina = async (req: Request, res: Response) => {
   try {

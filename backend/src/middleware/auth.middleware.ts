@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
-const SECRET = "segredo_super_secreto";
+dotenv.config();
+
+const SECRET = process.env.JWT_SECRET || "segredo_super_secreto";
 
 export const authMiddleware = (
   req: Request,
@@ -10,16 +13,25 @@ export const authMiddleware = (
 ) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader)
+  if (!authHeader) {
     return res.status(401).json({ message: "Token não informado!" });
+  }
 
-  const [, token] = authHeader.split(" ");
+  const parts = authHeader.split(" ");
+  
+  if (parts.length !== 2 || parts[0] !== "Bearer") {
+    return res.status(401).json({ message: "Formato de token inválido!" });
+  }
+
+  const token = parts[1];
 
   try {
     const decoded = jwt.verify(token, SECRET);
-    req.body.user = decoded;
+    // Adicionar informações do usuário ao request
+    (req as any).user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Token inválido!" });
+    console.error("Erro ao verificar token:", error);
+    return res.status(401).json({ message: "Token inválido ou expirado!" });
   }
 };
