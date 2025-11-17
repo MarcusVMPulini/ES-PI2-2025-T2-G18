@@ -1,3 +1,5 @@
+//Autor: Marcus
+
 // Turma - Gerenciamento de Componentes, Alunos e Notas
 
 let turmaAtual = null;
