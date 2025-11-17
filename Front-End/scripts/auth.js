@@ -1,3 +1,5 @@
+//Autores: Lucas Leonel, Marcus
+
 // Autenticação - Login e Cadastro
 
 // === LOGIN ===
