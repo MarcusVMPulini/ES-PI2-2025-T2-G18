@@ -1,3 +1,5 @@
+--Autores: Marcus, Leonel
+
 -- Script para adicionar coluna peso na tabela componentes_nota
 -- Execute este script no banco de dados MySQL
 -- IMPORTANTE: Certifique-se de estar usando o banco de dados correto antes de executar
