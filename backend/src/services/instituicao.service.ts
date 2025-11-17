@@ -1,3 +1,5 @@
+//Autores: Marcus, Leonel
+
 import { query } from "../config/database";
 
 export interface Instituicao {
