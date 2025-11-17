@@ -1,48 +1,44 @@
-<!-- Autores: Arthur, Leonel -->
-
-<!-- Dashboard principal do docente (instituições, disciplinas e turmas) -->
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Configurações básicas da página -->
     <meta charset="UTF-8"/>
     <title>NotaDez - Dashboard</title>
 
-    <!-- Estilos principais -->
+    <!-- CSS principal da página -->
     <link rel="stylesheet" href="Static/styles/dashbord.css"/>
 
-    <!-- Bootstrap (layout e componentes) -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-
 <body>
 
-<!-- Cabeçalho: nome do docente + botões navegação -->
+<!-- Cabeçalho fixo com usuário e botões -->
 <header>
   <div class="header-esquerda">
-    <span class="usuario">Carregando...</span> <!-- Carregado via JS -->
+    <span class="usuario">Carregando...</span>
   </div>
-
   <div class="header-direita">
         <nav>
             <a href="dashbord.html" class="dashboard-link">Dashboard</a>
         </nav>
-
-        <button class="logout-btn">Sair</button> <!-- Logout via auth.js -->
+    <button class="logout-btn">Sair</button>
   </div>
 </header>
 
+<!-- Conteúdo principal -->
 <main>
     <h1>Painel do Docente</h1>
 
-    <!-- Três colunas principais: Instituições → Disciplinas → Turmas -->
     <div class="flex-row">
 
-        <!-- INSTITUIÇÕES E CURSOS -->
+        <!-- Seção Instituições e Cursos -->
         <section class="card-list" style="flex:1;">
             <h3>Minhas Instituições / Cursos</h3>
-            <div id="listaInstituicoes"></div> <!-- Carrega via dashboard.js -->
+            <div id="listaInstituicoes"></div>
 
             <h4 style="margin-top:16px;">Adicionar Instituição + Curso</h4>
             <form id="formInstituicao">
@@ -56,19 +52,17 @@
             </form>
         </section>
 
-        <!-- DISCIPLINAS VINCULADAS A UMA INSTITUIÇÃO -->
+        <!-- Seção Disciplinas -->
         <section class="card-list" style="flex:1;">
             <h3>Disciplinas</h3>
 
             <label>Instituição / Curso</label>
-            <select id="disc_instituicao"></select> <!-- Lista dinâmica -->
+            <select id="disc_instituicao"></select>
 
             <div id="listaDisciplinas" style="margin-top:12px;"></div>
 
             <h4 style="margin-top:16px;">Adicionar Disciplina</h4>
             <form id="formDisciplina">
-
-                <!-- Seleção da instituição para vincular a disciplina -->
                 <label>Instituição / Curso</label>
                 <select name="instituicao" id="disc_instituicao_clone"></select>
 
@@ -88,11 +82,10 @@
             </form>
         </section>
 
-        <!-- TURMAS VINCULADAS A UMA DISCIPLINA -->
+        <!-- Seção Turmas -->
         <section class="card-list" style="flex:1;">
             <h3>Turmas</h3>
 
-            <!-- Filtros para listar turmas -->
             <label>Instituição / Curso</label>
             <select id="turma_instituicao"></select>
 
@@ -103,8 +96,6 @@
 
             <h4 style="margin-top:16px;">Adicionar Turma</h4>
             <form id="formTurma">
-
-                <!-- Disciplina que receberá a turma -->
                 <label>Disciplina</label>
                 <select name="disciplina" id="turma_disciplina_clone"></select>
 
@@ -118,8 +109,9 @@
 
                 <!-- Aviso sobre exclusão -->
                 <div class="notice" style="margin-top:12px;">
-                    Ao excluir uma turma, a ação é irreversível.
-                    Aqui usamos apenas um <code>confirm()</code> simples.
+                    Ao excluir uma turma, a ação é irreversível. No projeto real,
+                    haveria confirmação via e-mail conforme descrito no escopo. Aqui usamos
+                    apenas um <code>confirm()</code> na interface. :contentReference[oaicite:9]{index=9}
                 </div>
             </form>
         </section>
@@ -127,16 +119,12 @@
 </main>
 
 <!-- Rodapé -->
-<footer>
-    NotaDez - Projeto Integrador 2 (PUC-Campinas, 2025)
-</footer>
+<footer>NotaDez - Projeto Integrador 2 (PUC-Campinas, 2025) :contentReference[oaicite:10]{index=10}</footer>
 
-<!-- Scripts responsáveis por autenticação, armazenamento e lógica do dashboard -->
+<!-- Scripts principais do sistema -->
 <script src="scripts/config.js"></script>
 <script src="scripts/storage.js"></script>
 <script src="scripts/auth.js"></script>
 <script src="scripts/dashboard.js"></script>
-
 </body>
 </html>
-
