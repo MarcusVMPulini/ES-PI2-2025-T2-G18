@@ -1,3 +1,5 @@
+//Autor: Marcus, Leonel
+
 // Storage utilities - compatibilidade com código existente
 // Este arquivo mantém compatibilidade com referências antigas
 
