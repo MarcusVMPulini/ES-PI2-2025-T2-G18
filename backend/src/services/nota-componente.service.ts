@@ -1,3 +1,6 @@
+//Autor: Marcus
+
+//imports
 import { query } from "../config/database";
 import { disciplinaService } from "./disciplina.service";
 import { componenteNotaService } from "./componente-nota.service";
