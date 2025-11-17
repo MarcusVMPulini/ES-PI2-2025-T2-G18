@@ -1,3 +1,6 @@
+//Autor: Marcus
+
+//imports
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
 import {
@@ -6,9 +9,9 @@ import {
   editarNota,
   excluirNota
 } from "../controllers/notas.controller";
-
+//variavel manipulacao rota
 const router = Router();
-
+//rotas
 router.use(authMiddleware);
 
 router.get("/", listarNotas);
