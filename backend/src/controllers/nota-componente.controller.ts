@@ -1,3 +1,5 @@
+//Autores: Marcus, Arthur
+
 import { Request, Response } from "express";
 import { notaComponenteService } from "../services/nota-componente.service";
 import { alunoService } from "../services/aluno.service";
@@ -5,7 +7,7 @@ import { turmaService } from "../services/turma.service";
 import { componenteNotaService } from "../services/componente-nota.service";
 import { notasService } from "../services/notas.service";
 
-// ✅ Listar todas as notas de uma turma
+// Listar todas as notas de uma turma
 export const listarNotasPorTurma = async (req: Request, res: Response) => {
   try {
     const { idTurma } = req.params;
@@ -17,7 +19,7 @@ export const listarNotasPorTurma = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Listar notas de um componente específico em uma turma
+// Listar notas de um componente específico em uma turma
 export const listarNotasPorComponente = async (req: Request, res: Response) => {
   try {
     const { idTurma, idComponente } = req.params;
@@ -32,7 +34,7 @@ export const listarNotasPorComponente = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Lançar/Editar nota de um componente específico
+// Lançar/Editar nota de um componente específico
 export const lancarNotaComponente = async (req: Request, res: Response) => {
   try {
     const { idTurma, idComponente } = req.params;
@@ -91,7 +93,7 @@ export const lancarNotaComponente = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Editar nota específica
+// Editar nota específica
 export const editarNota = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -128,7 +130,7 @@ export const editarNota = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Calcular nota final de um aluno
+// Calcular nota final de um aluno
 export const calcularNotaFinal = async (req: Request, res: Response) => {
   try {
     const { idTurma, idAluno } = req.params;
@@ -158,7 +160,7 @@ export const listarNotasFinaisPorTurma = async (req: Request, res: Response) => 
   }
 };
 
-// ✅ Excluir nota
+// Excluir nota
 export const excluirNota = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
