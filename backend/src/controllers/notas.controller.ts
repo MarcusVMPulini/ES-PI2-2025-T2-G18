@@ -1,9 +1,11 @@
+//Autores: Marcus, Arthur
+
 import { Request, Response } from "express";
 import { notasService } from "../services/notas.service";
 import { alunoService } from "../services/aluno.service";
 import { turmaService } from "../services/turma.service";
 
-// ✅ Listar todas as notas
+// Listar todas as notas
 export const listarNotas = async (req: Request, res: Response) => {
   try {
     const notas = await notasService.findAll();
@@ -14,7 +16,7 @@ export const listarNotas = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Lançar nota
+// Lançar nota
 export const lancarNota = async (req: Request, res: Response) => {
   try {
     const { idAluno, idTurma, nota1, nota2 } = req.body;
@@ -50,7 +52,7 @@ export const lancarNota = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Editar nota
+// Editar nota
 export const editarNota = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -79,7 +81,7 @@ export const editarNota = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Excluir nota
+// Excluir nota
 export const excluirNota = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
