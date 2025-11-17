@@ -11,6 +11,7 @@ Arthur Valerio De Santi | RA: 25006924
 Gabriel Rocca Padua dos Santos | RA: 25002330
 Lucas Leonel | RA: 25015188
 ---------------------------------------------Utilização código------------------------------------------
+
 1° passo-) Ao abrir o ambiente de teste, clonar o repositorio atraves do link: 
 https://github.com/MarcusVMPulini/ES-PI2-2025-T2-G18.git ou entrar na parte CODE e copiar o link em https.
 
@@ -19,9 +20,13 @@ dotenv, mysql2, bcrypt, jsonwebtoken, cors, body-parser""
 
 3° passo) Ainda dentro da pasta backend crie um arquivo .env e cole os seguintes dados: 
 DB_HOST=shinkansen.proxy.rlwy.net
+
 DB_PORT=20092
+
 DB_USER=root
+
 DB_PASSWORD=FiTvUPAVsGlZombLphMoeATOpdQYneDr
+
 DB_NAME=notadez1
 
 JWT_SECRET=segredo_super_secreto
