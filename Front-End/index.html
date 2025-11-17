@@ -1,29 +1,41 @@
 <!-- Autores: Arthur,Lucas Leonel -->
 
+<!-- Autores: Arthur, Lucas Leonel -->
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
+  <!-- Compatibilidade com navegadores antigos -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Responsividade -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>NotaDez</title>
+
+  <!-- CSS principal -->
   <link rel="stylesheet" href="Static/styles/index.css">
+
+  <!-- UIkit e Bootstrap (estilos e componentes) -->
   <script src="https://cdn.jsdelivr.net/npm/uikit@3.24.1/dist/js/uikit.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/uikit@3.24.1/dist/css/uikit.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-    crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Scripts do sistema -->
   <script src="scripts/config.js"></script>
   <script src="scripts/storage.js"></script>
   <script src="scripts/auth.js"></script>
 </head>
 
 <body>
+
+  <!-- Área de login -->
   <div id="login">
-    <h2>Login </h2>
+    <h2>Login</h2>
+
+    <!-- Campo de e-mail -->
     <div class="form-group mb-3">
       <div class="row align-items-center">
         <div class="col-auto">
@@ -40,6 +52,7 @@
       </div>
     </div>
 
+    <!-- Campo de senha -->
     <div class="form-group mb-3">
       <div class="row align-items-center">
         <div class="col-auto">
@@ -55,34 +68,34 @@
         </div>
       </div>
     </div>
+
+    <!-- Lembre-me + Esqueci a senha -->
     <div class="row justify-content-between align-items-center">
       <div class="col-auto">
         <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+          <input class="form-check-input" type="checkbox" id="switchCheckDefault">
           <label class="form-check-label" for="switchCheckDefault">Lembre-me</label>
         </div>
       </div>
       <div class="col-auto">
-        <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-          href="EsqueciSenha.html" id="forgotpassword">
-          Esqueci a senha
-        </a>
+        <a href="EsqueciSenha.html" id="forgotpassword">Esqueci a senha</a>
       </div>
     </div>
+
+    <!-- Botão de login -->
     <div class="row justify-content-center">
       <div class="col-auto">
         <button type="button" id="btnLogin" class="btn btn-outline-primary">Entrar</button>
       </div>
     </div>
+
+    <!-- Link de criar conta -->
     <div class="row justify-content-center">
       <div class="col-auto">
-        <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-          href="cadastro.html" id="createacount">
-          Criar Conta
-        </a>
+        <a href="cadastro.html" id="createacount">Criar Conta</a>
       </div>
     </div>
   </div>
-</body>
 
+</body>
 </html>
