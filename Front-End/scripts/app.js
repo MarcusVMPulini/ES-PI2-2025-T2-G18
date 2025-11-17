@@ -1,3 +1,5 @@
+//Autores: Lucas Leonel, Gabriel rocca
+
 // app.js - Funções utilitárias gerais (se necessário)
 // A lógica de autenticação está em auth.js
 
