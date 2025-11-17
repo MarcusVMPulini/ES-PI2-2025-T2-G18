@@ -1,3 +1,6 @@
+//Autor: Marcus
+
+//imports
 import { Request, Response } from "express";
 import { componenteNotaService } from "../services/componente-nota.service";
 import { disciplinaService } from "../services/disciplina.service";
