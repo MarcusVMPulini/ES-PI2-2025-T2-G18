@@ -1,3 +1,5 @@
+//Autor: Marcus
+
 // Dashboard - Gerenciamento de Instituições, Cursos, Disciplinas e Turmas
 
 let instituicoes = [];
