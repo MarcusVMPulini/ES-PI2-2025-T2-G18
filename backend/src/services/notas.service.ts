@@ -1,5 +1,6 @@
 //Autores: Marcus, Arthur
 
+//imports
 import { query } from "../config/database";
 
 export interface Nota {
