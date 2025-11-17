@@ -1,3 +1,6 @@
+//Autor: Marcus
+
+//imports
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
 import {
@@ -5,9 +8,9 @@ import {
   matricularAluno,
   removerMatricula
 } from "../controllers/matricula.controller";
-
+//variavel manipulacao
 const router = Router();
-
+//rotas
 router.use(authMiddleware);
 
 router.get("/", listarMatriculas);
