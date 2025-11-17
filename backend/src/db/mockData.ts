@@ -1,3 +1,5 @@
+//Autor: Marcus
+
 // src/db/mockData.ts
 export const mockInstituicoes = [
     { id: 1, nome: "PUC-Campinas" },
