@@ -1,3 +1,6 @@
+//Autor: Marcus
+
+//imports
 import { Router } from "express";
 import authRoutes from "./auth.routes";
 import { authMiddleware } from "../middleware/auth.middleware";
@@ -11,9 +14,9 @@ import notasRoutes from "./notas.routes";
 import boletimRoutes from "./boletim.routes";
 import componenteNotaRoutes from "./componente-nota.routes";
 import notaComponenteRoutes from "./nota-componente.routes";
-
+//variavel manipulacao
 const router = Router();
-
+//Confirmacao de acesso para funcionamento da rota
 router.get("/protegido", authMiddleware, (req, res) => {
     res.json({ message: "Acesso permitido ao usuário logado!" });
 });
@@ -21,7 +24,7 @@ router.get("/protegido", authMiddleware, (req, res) => {
 router.get("/ping", (req, res) => {
   res.json({ message: "pong" });
 });
-
+//rotas
 router.use("/auth", authRoutes);
 router.use("/instituicoes", instituicaoRoutes);
 router.use("/cursos", cursoRoutes);
