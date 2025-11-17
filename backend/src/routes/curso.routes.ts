@@ -1,3 +1,6 @@
+//Autor: Marcus
+
+//imports
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
 import {
@@ -6,9 +9,9 @@ import {
   editarCurso,
   excluirCurso,
 } from "../controllers/curso.controller";
-
+//variavel para manipulacao
 const router = Router();
-
+//rotas
 router.use(authMiddleware);
 
 router.get("/", listarCursos);
