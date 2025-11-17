@@ -6,6 +6,7 @@ import {
   lancarNotaComponente,
   editarNota,
   calcularNotaFinal,
+  listarNotasFinaisPorTurma,
   excluirNota,
 } from "../controllers/nota-componente.controller";
 
@@ -18,6 +19,7 @@ router.get("/turma/:idTurma", listarNotasPorTurma);
 router.get("/turma/:idTurma/componente/:idComponente", listarNotasPorComponente);
 router.post("/turma/:idTurma/componente/:idComponente", lancarNotaComponente);
 router.get("/turma/:idTurma/aluno/:idAluno/nota-final", calcularNotaFinal);
+router.get("/turma/:idTurma/notas-finais", listarNotasFinaisPorTurma);
 
 // Rotas gerais
 router.put("/:id", editarNota);

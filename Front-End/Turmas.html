@@ -11,6 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/uikit@3.24.1/dist/css/uikit.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
@@ -81,6 +82,12 @@
                                     <textarea class="form-control" name="descricao" rows="3" required></textarea>
                                 </div>
 
+                                <div class="mb-3">
+                                    <label class="form-label">Peso na Nota Final (%)</label>
+                                    <input type="number" class="form-control" name="peso" min="0" max="100" step="0.01" placeholder="Ex: 40" />
+                                    <small class="form-text text-muted">Percentual que este componente vale na nota final (0-100). Ex: 40 = 40%</small>
+                                </div>
+
                                 <button type="submit" class="btn btn-outline-success">Adicionar Componente</button>
                             </form>
                         </div>
@@ -89,8 +96,9 @@
             </div>
 
             <div class="alert alert-info mt-3">
-                A nota final exibida será a média simples de todos os componentes.
-                Isso está de acordo com a alternativa permitida ao requisito de fórmula de cálculo da nota final.
+                A nota final será calculada com base nos pesos de cada componente. 
+                Se os pesos não somarem 100%, será usada média ponderada normalizada.
+                Se nenhum peso for definido, será usada média simples.
             </div>
         </section>
 

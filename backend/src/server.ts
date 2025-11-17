@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import routes from "./routes";
-import { testConnection } from "./config/database";
+import { testConnection, ensurePesoColumn } from "./config/database";
 
 const app = express();
 const port = 3000;
@@ -20,4 +20,5 @@ app.use("/api", routes);
 app.listen(port, async () => {
     console.log(`Server rodando na porta: ${port}`);
     await testConnection();
+    await ensurePesoColumn(); // Garantir que a coluna peso existe
 });

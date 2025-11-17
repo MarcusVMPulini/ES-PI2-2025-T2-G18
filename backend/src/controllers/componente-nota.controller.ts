@@ -18,7 +18,7 @@ export const listarComponentesPorDisciplina = async (req: Request, res: Response
 export const criarComponente = async (req: Request, res: Response) => {
   try {
     const { idDisciplina } = req.params;
-    const { nome, sigla, descricao } = req.body;
+    const { nome, sigla, descricao, peso } = req.body;
 
     if (!nome || !sigla) {
       return res.status(400).json({ message: "Nome e sigla são obrigatórios" });
@@ -35,18 +35,25 @@ export const criarComponente = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "A sigla deve conter apenas letras e números, sem espaços" });
     }
 
+    // Validar peso se fornecido
+    const pesoNum = peso !== undefined && peso !== null ? Number(peso) : undefined;
+    if (pesoNum !== undefined && (isNaN(pesoNum) || pesoNum < 0 || pesoNum > 100)) {
+      return res.status(400).json({ message: "O peso deve estar entre 0 e 100" });
+    }
+
     const id = await componenteNotaService.create(
       nome,
       sigla.toUpperCase(),
       Number(idDisciplina),
-      descricao
+      descricao,
+      pesoNum
     );
     const novo = await componenteNotaService.findById(id);
 
     return res.status(201).json({ message: "Componente criado", componente: novo });
   } catch (error: any) {
     console.error("Erro ao criar componente:", error);
-    if (error.message.includes("Já existe")) {
+    if (error.message.includes("Já existe") || error.message.includes("peso")) {
       return res.status(400).json({ message: error.message });
     }
     return res.status(500).json({ message: "Erro interno do servidor" });
@@ -57,7 +64,7 @@ export const criarComponente = async (req: Request, res: Response) => {
 export const editarComponente = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { nome, sigla, descricao } = req.body;
+    const { nome, sigla, descricao, peso } = req.body;
 
     const existe = await componenteNotaService.findById(Number(id));
     if (!existe) {
@@ -69,11 +76,18 @@ export const editarComponente = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "A sigla deve conter apenas letras e números, sem espaços" });
     }
 
+    // Validar peso se fornecido
+    const pesoNum = peso !== undefined && peso !== null ? Number(peso) : undefined;
+    if (pesoNum !== undefined && (isNaN(pesoNum) || pesoNum < 0 || pesoNum > 100)) {
+      return res.status(400).json({ message: "O peso deve estar entre 0 e 100" });
+    }
+
     const atualizado = await componenteNotaService.update(
       Number(id),
       nome,
       sigla ? sigla.toUpperCase() : undefined,
-      descricao
+      descricao,
+      pesoNum
     );
 
     if (!atualizado) {
@@ -84,7 +98,7 @@ export const editarComponente = async (req: Request, res: Response) => {
     return res.json({ message: "Componente atualizado", componente });
   } catch (error: any) {
     console.error("Erro ao editar componente:", error);
-    if (error.message.includes("Já existe")) {
+    if (error.message.includes("Já existe") || error.message.includes("peso")) {
       return res.status(400).json({ message: error.message });
     }
     return res.status(500).json({ message: "Erro interno do servidor" });

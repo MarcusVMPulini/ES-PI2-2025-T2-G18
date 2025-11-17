@@ -115,6 +115,55 @@ export const notasService = {
     return result.affectedRows > 0;
   },
 
+  // Criar ou atualizar nota final (usado para salvar nota final calculada dos componentes)
+  upsertNotaFinal: async (
+    idAluno: number,
+    idTurma: number,
+    media: number,
+    situacao: string
+  ): Promise<number> => {
+    try {
+      console.log(`[upsertNotaFinal] Salvando nota final - Aluno: ${idAluno}, Turma: ${idTurma}, Media: ${media}, Situacao: ${situacao}`);
+      
+      // Verificar se já existe
+      const existe = await notasService.findByAlunoAndTurma(idAluno, idTurma);
+      console.log(`[upsertNotaFinal] Nota existente:`, existe);
+
+      if (existe) {
+        // Validar media antes de salvar
+        if (isNaN(media) || !isFinite(media)) {
+          console.error(`[upsertNotaFinal] Media inválida: ${media}, não atualizando`);
+          throw new Error(`Media inválida: ${media}`);
+        }
+        
+        // Atualizar apenas media e situacao
+        const result = await query<any>(
+          "UPDATE notas SET media = ?, situacao = ? WHERE id = ?",
+          [media, situacao, existe.id]
+        ) as any;
+        console.log(`[upsertNotaFinal] Nota atualizada. ID: ${existe.id}, Rows affected: ${result.affectedRows}`);
+        return existe.id!;
+      } else {
+        // Validar media antes de salvar
+        if (isNaN(media) || !isFinite(media)) {
+          console.error(`[upsertNotaFinal] Media inválida: ${media}, não criando registro`);
+          throw new Error(`Media inválida: ${media}`);
+        }
+        
+        // Criar novo registro (nota1 e nota2 são 0, não são usados no sistema de componentes)
+        const result = await query<any>(
+          "INSERT INTO notas (idAluno, idTurma, nota1, nota2, media, situacao) VALUES (?, ?, 0, 0, ?, ?)",
+          [idAluno, idTurma, media, situacao]
+        ) as any;
+        console.log(`[upsertNotaFinal] Nota criada. ID: ${result.insertId}`);
+        return result.insertId;
+      }
+    } catch (error: any) {
+      console.error(`[upsertNotaFinal] Erro ao salvar nota final:`, error);
+      throw error;
+    }
+  },
+
   // Excluir nota
   delete: async (id: number): Promise<boolean> => {
     const result = await query<any>(

@@ -1,6 +1,7 @@
 import { query } from "../config/database";
 import { disciplinaService } from "./disciplina.service";
 import { componenteNotaService } from "./componente-nota.service";
+import { notasService } from "./notas.service";
 
 export interface NotaComponente {
   id?: number;
@@ -22,34 +23,97 @@ export interface NotaComponenteCompleta extends NotaComponente {
 
 // Função para calcular nota final baseada na fórmula
 export const calcularNotaFinal = (
-  notas: { sigla: string; valor: number }[],
+  notas: { sigla: string; valor: number; peso?: number | null }[],
   formula: string
 ): number => {
+  console.log(`[calcularNotaFinal] Iniciando cálculo. Notas:`, notas, `Fórmula:`, formula);
+  
+  // Garantir que todos os valores sejam números válidos
+  const notasValidas = notas.filter(n => {
+    const valor = typeof n.valor === 'number' ? n.valor : parseFloat(n.valor);
+    return !isNaN(valor) && valor >= 0 && valor <= 10;
+  });
+  
+  console.log(`[calcularNotaFinal] Notas válidas:`, notasValidas);
+  
   if (!formula || formula.trim() === "") {
-    // Se não há fórmula, calcula média simples
-    if (notas.length === 0) return 0;
-    const soma = notas.reduce((acc, n) => acc + n.valor, 0);
-    return Number((soma / notas.length).toFixed(2));
+    // Se não há fórmula, verificar se há pesos definidos
+    const notasComPeso = notasValidas.filter(n => n.peso !== null && n.peso !== undefined && n.peso > 0);
+    
+    if (notasComPeso.length > 0) {
+      // Calcular média ponderada
+      let somaPonderada = 0;
+      let somaPesos = 0;
+      
+      notasComPeso.forEach(n => {
+        const valor = typeof n.valor === 'number' ? n.valor : parseFloat(n.valor);
+        const peso = typeof n.peso === 'number' ? n.peso : parseFloat(n.peso || '0');
+        somaPonderada += valor * peso;
+        somaPesos += peso;
+      });
+      
+      if (somaPesos > 0) {
+        // Calcular média ponderada
+        // Se os pesos somarem 100%, usar diretamente: (nota * peso) / 100
+        // Se não, normalizar: (nota * peso) / soma(pesos) * (100 / soma(pesos))
+        let mediaPonderada;
+        if (Math.abs(somaPesos - 100) < 0.01) {
+          // Pesos somam 100%, usar diretamente
+          mediaPonderada = somaPonderada / 100;
+        } else {
+          // Pesos não somam 100%, normalizar
+          mediaPonderada = somaPonderada / somaPesos;
+        }
+        console.log(`[calcularNotaFinal] Média ponderada calculada:`, mediaPonderada, `(soma pesos: ${somaPesos}%)`);
+        // Garantir que está entre 0 e 10
+        return Number(Math.max(0, Math.min(10, mediaPonderada)).toFixed(2));
+      }
+    }
+    
+    // Se não há pesos ou pesos inválidos, calcular média simples
+    if (notasValidas.length === 0) {
+      console.log(`[calcularNotaFinal] Nenhuma nota válida, retornando 0`);
+      return 0;
+    }
+    const soma = notasValidas.reduce((acc, n) => {
+      const valor = typeof n.valor === 'number' ? n.valor : parseFloat(n.valor);
+      return acc + (isNaN(valor) ? 0 : valor);
+    }, 0);
+    const media = soma / notasValidas.length;
+    console.log(`[calcularNotaFinal] Média simples calculada:`, media);
+    return Number(media.toFixed(2));
   }
 
   try {
     // Substituir siglas pelos valores
     let formulaCalculo = formula;
-    notas.forEach((nota) => {
+    notasValidas.forEach((nota) => {
+      const valor = typeof nota.valor === 'number' ? nota.valor : parseFloat(nota.valor);
       const regex = new RegExp(`\\b${nota.sigla}\\b`, "g");
-      formulaCalculo = formulaCalculo.replace(regex, nota.valor.toString());
+      formulaCalculo = formulaCalculo.replace(regex, valor.toString());
     });
+    console.log(`[calcularNotaFinal] Fórmula após substituição:`, formulaCalculo);
 
     // Avaliar a fórmula (cuidado com segurança - em produção usar um parser seguro)
     // Por enquanto, suporta operações básicas: +, -, *, /, (, )
     const resultado = Function(`"use strict"; return (${formulaCalculo})`)();
-    return Number(Math.max(0, Math.min(10, resultado)).toFixed(2)); // Limitar entre 0 e 10
+    const resultadoLimitado = Math.max(0, Math.min(10, resultado));
+    console.log(`[calcularNotaFinal] Resultado da fórmula:`, resultado, `Limitado:`, resultadoLimitado);
+    return Number(resultadoLimitado.toFixed(2)); // Limitar entre 0 e 10
   } catch (error) {
-    console.error("Erro ao calcular nota final:", error);
+    console.error("[calcularNotaFinal] Erro ao calcular nota final:", error);
     // Fallback para média simples
-    if (notas.length === 0) return 0;
-    const soma = notas.reduce((acc, n) => acc + n.valor, 0);
-    return Number((soma / notas.length).toFixed(2));
+    if (notasValidas.length === 0) {
+      console.log(`[calcularNotaFinal] Fallback: nenhuma nota válida, retornando 0`);
+      return 0;
+    }
+    const soma = notasValidas.reduce((acc, n) => {
+      const valor = typeof n.valor === 'number' ? n.valor : parseFloat(n.valor);
+      return acc + (isNaN(valor) ? 0 : valor);
+    }, 0);
+    const media = soma / notasValidas.length;
+    console.log(`[calcularNotaFinal] Fallback: média simples calculada:`, media);
+    return Number(media.toFixed(2));
   }
 };
 
@@ -216,21 +280,50 @@ export const notaComponenteService = {
 
     // Buscar todas as notas do aluno na turma
     const notas = await notaComponenteService.findByAlunoAndTurma(idAluno, idTurma);
+    console.log(`[calcularNotaFinalAluno] Notas encontradas para aluno ${idAluno}:`, notas);
 
-    // Mapear para formato esperado pela função de cálculo
-    const notasFormatadas = notas.map((n) => ({
-      sigla: n.siglaComponente || "",
-      valor: n.valor,
-    }));
+    // Buscar componentes para pegar os pesos
+    const todosComponentes = await componenteNotaService.findByDisciplina(turma[0].idDisciplina);
+    
+    // Mapear para formato esperado pela função de cálculo (incluindo peso)
+    const notasFormatadas = notas.map((n) => {
+      // Garantir que valor seja um número
+      const valor = typeof n.valor === 'number' ? n.valor : parseFloat(n.valor);
+      // Buscar o componente para pegar o peso
+      const componente = todosComponentes.find(c => c.id === n.idComponente);
+      const peso = componente && componente.peso !== null && componente.peso !== undefined 
+        ? (typeof componente.peso === 'number' ? componente.peso : parseFloat(String(componente.peso)))
+        : null;
+      
+      return {
+        sigla: n.siglaComponente || "",
+        valor: isNaN(valor) ? 0 : valor,
+        peso: peso !== null && !isNaN(peso) ? peso : null,
+      };
+    });
+    console.log(`[calcularNotaFinalAluno] Notas formatadas:`, notasFormatadas);
+    console.log(`[calcularNotaFinalAluno] Fórmula:`, disciplina.formula_nota_final || "(média ponderada ou simples)");
 
     // Calcular nota final
     const notaFinal = calcularNotaFinal(
       notasFormatadas,
       disciplina.formula_nota_final || ""
     );
+    console.log(`[calcularNotaFinalAluno] Nota final calculada:`, notaFinal);
 
     // Determinar situação
     const situacao = notaFinal >= 6 ? "Aprovado" : "Reprovado";
+
+    console.log(`[calcularNotaFinalAluno] Calculado - Aluno: ${idAluno}, Turma: ${idTurma}, Nota Final: ${notaFinal}, Situacao: ${situacao}`);
+
+    // Salvar nota final e situação na tabela notas
+    try {
+      const notaId = await notasService.upsertNotaFinal(idAluno, idTurma, notaFinal, situacao);
+      console.log(`[calcularNotaFinalAluno] Nota final salva com sucesso. ID: ${notaId}`);
+    } catch (error: any) {
+      console.error(`[calcularNotaFinalAluno] Erro ao salvar nota final:`, error);
+      // Não lançar erro, apenas logar, para não quebrar o fluxo
+    }
 
     return { notaFinal, situacao };
   },

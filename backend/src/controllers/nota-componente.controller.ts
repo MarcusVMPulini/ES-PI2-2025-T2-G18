@@ -3,6 +3,7 @@ import { notaComponenteService } from "../services/nota-componente.service";
 import { alunoService } from "../services/aluno.service";
 import { turmaService } from "../services/turma.service";
 import { componenteNotaService } from "../services/componente-nota.service";
+import { notasService } from "../services/notas.service";
 
 // ✅ Listar todas as notas de uma turma
 export const listarNotasPorTurma = async (req: Request, res: Response) => {
@@ -141,6 +142,18 @@ export const calcularNotaFinal = async (req: Request, res: Response) => {
     return res.json(resultado);
   } catch (error) {
     console.error("Erro ao calcular nota final:", error);
+    return res.status(500).json({ message: "Erro interno do servidor" });
+  }
+};
+
+// ✅ Listar notas finais de uma turma
+export const listarNotasFinaisPorTurma = async (req: Request, res: Response) => {
+  try {
+    const { idTurma } = req.params;
+    const notasFinais = await notasService.findByTurma(Number(idTurma));
+    return res.json(notasFinais);
+  } catch (error) {
+    console.error("Erro ao listar notas finais:", error);
     return res.status(500).json({ message: "Erro interno do servidor" });
   }
 };

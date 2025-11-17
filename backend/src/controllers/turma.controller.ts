@@ -272,7 +272,12 @@ export const exportarNotasCSV = async (req: Request, res: Response) => {
       // Adicionar colunas para cada componente
       componentes.forEach((comp) => {
         const nota = notas.find((n) => n.idComponente === comp.id);
-        linha[comp.sigla] = nota ? nota.valor.toFixed(2) : "-";
+        if (nota && nota.valor !== undefined && nota.valor !== null) {
+          const valor = typeof nota.valor === 'number' ? nota.valor : parseFloat(nota.valor);
+          linha[comp.sigla] = !isNaN(valor) ? valor.toFixed(2) : "-";
+        } else {
+          linha[comp.sigla] = "-";
+        }
       });
 
       linha["Nota Final"] = notaFinal.toFixed(2);

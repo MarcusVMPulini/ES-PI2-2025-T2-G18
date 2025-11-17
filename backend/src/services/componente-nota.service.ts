@@ -6,6 +6,7 @@ export interface ComponenteNota {
   sigla: string;
   descricao?: string;
   idDisciplina: number;
+  peso?: number; // Percentual que o componente vale na nota final (0-100)
   created_at?: Date;
   updated_at?: Date;
 }
@@ -50,7 +51,8 @@ export const componenteNotaService = {
     nome: string,
     sigla: string,
     idDisciplina: number,
-    descricao?: string
+    descricao?: string,
+    peso?: number
   ): Promise<number> => {
     // Validar sigla única na disciplina
     const existe = await componenteNotaService.findBySiglaAndDisciplina(sigla, idDisciplina);
@@ -58,9 +60,14 @@ export const componenteNotaService = {
       throw new Error("Já existe um componente com esta sigla nesta disciplina");
     }
 
+    // Validar peso se fornecido
+    if (peso !== undefined && (peso < 0 || peso > 100)) {
+      throw new Error("O peso deve estar entre 0 e 100");
+    }
+
     const result = await query<any>(
-      "INSERT INTO componentes_nota (nome, sigla, descricao, idDisciplina) VALUES (?, ?, ?, ?)",
-      [nome, sigla, descricao || null, idDisciplina]
+      "INSERT INTO componentes_nota (nome, sigla, descricao, idDisciplina, peso) VALUES (?, ?, ?, ?, ?)",
+      [nome, sigla, descricao || null, idDisciplina, peso !== undefined ? peso : null]
     ) as any;
     return result.insertId;
   },
@@ -70,7 +77,8 @@ export const componenteNotaService = {
     id: number,
     nome?: string,
     sigla?: string,
-    descricao?: string
+    descricao?: string,
+    peso?: number
   ): Promise<boolean> => {
     const updates: string[] = [];
     const params: any[] = [];
@@ -94,6 +102,14 @@ export const componenteNotaService = {
     if (descricao !== undefined) {
       updates.push("descricao = ?");
       params.push(descricao);
+    }
+    if (peso !== undefined) {
+      // Validar peso
+      if (peso < 0 || peso > 100) {
+        throw new Error("O peso deve estar entre 0 e 100");
+      }
+      updates.push("peso = ?");
+      params.push(peso);
     }
 
     if (updates.length === 0) return false;

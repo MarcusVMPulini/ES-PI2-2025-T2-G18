@@ -9,7 +9,7 @@ const dbConfig = {
   port: parseInt(process.env.DB_PORT || "3306"),
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "notadez",
+  database: process.env.DB_NAME || "notadez1",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -59,5 +59,50 @@ export const closePool = async (): Promise<void> => {
     await pool.end();
     pool = null;
     console.log("Pool de conexões MySQL fechado");
+  }
+};
+
+// Função para verificar e criar coluna peso se não existir
+export const ensurePesoColumn = async (): Promise<void> => {
+  try {
+    // Primeiro verificar se a tabela existe
+    const tables = await query<any[]>(
+      `SELECT TABLE_NAME 
+       FROM INFORMATION_SCHEMA.TABLES 
+       WHERE TABLE_SCHEMA = ? 
+       AND TABLE_NAME = 'componentes_nota'`,
+      [dbConfig.database]
+    );
+
+    if (tables.length === 0) {
+      console.log("Tabela 'componentes_nota' não encontrada. Pulando criação da coluna peso.");
+      return;
+    }
+
+    // Verificar se a coluna existe
+    const columns = await query<any[]>(
+      `SELECT COLUMN_NAME 
+       FROM INFORMATION_SCHEMA.COLUMNS 
+       WHERE TABLE_SCHEMA = ? 
+       AND TABLE_NAME = 'componentes_nota' 
+       AND COLUMN_NAME = 'peso'`,
+      [dbConfig.database]
+    );
+
+    if (columns.length === 0) {
+      // Coluna não existe, criar
+      console.log("Coluna 'peso' não encontrada. Criando...");
+      await query(
+        `ALTER TABLE componentes_nota 
+         ADD COLUMN peso DECIMAL(5,2) NULL 
+         COMMENT "Percentual que o componente vale na nota final (0-100)"`
+      );
+      console.log("Coluna 'peso' criada com sucesso!");
+    } else {
+      console.log("Coluna 'peso' já existe na tabela componentes_nota");
+    }
+  } catch (error: any) {
+    console.error("Erro ao verificar/criar coluna peso:", error.message);
+    // Não lançar erro para não impedir o servidor de iniciar
   }
 };
