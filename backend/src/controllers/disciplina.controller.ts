@@ -1,3 +1,5 @@
+//Autores: Marcus, Leonel
+
 import { Request, Response } from "express";
 import { disciplinaService } from "../services/disciplina.service";
 import { cursoService } from "../services/curso.service";
