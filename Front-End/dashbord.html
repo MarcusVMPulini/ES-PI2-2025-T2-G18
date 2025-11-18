@@ -1,0 +1,132 @@
+<!-- Autores: Arthur -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Configurações básicas da página -->
+    <meta charset="UTF-8"/>
+    <title>NotaDez - Dashboard</title>
+
+    <!-- CSS principal da página -->
+    <link rel="stylesheet" href="Static/styles/dashbord.css"/>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<!-- Cabeçalho fixo com usuário e botões -->
+<header>
+  <div class="header-esquerda">
+    <span class="usuario">Carregando...</span>
+  </div>
+  <div class="header-direita">
+        <nav>
+            <a href="dashbord.html" class="dashboard-link">Dashboard</a>
+        </nav>
+    <button class="logout-btn">Sair</button>
+  </div>
+</header>
+
+<!-- Conteúdo principal -->
+<main>
+    <h1>Painel do Docente</h1>
+
+    <div class="flex-row">
+
+        <!-- Seção Instituições e Cursos -->
+        <section class="card-list" style="flex:1;">
+            <h3>Minhas Instituições / Cursos</h3>
+            <div id="listaInstituicoes"></div>
+
+            <h4 style="margin-top:16px;">Adicionar Instituição + Curso</h4>
+            <form id="formInstituicao">
+                <label>Instituição</label>
+                <input type="text" name="nomeInstituicao" required/>
+
+                <label>Curso</label>
+                <input type="text" name="nomeCurso" required/>
+
+                <button type="submit">Adicionar</button>
+            </form>
+        </section>
+
+        <!-- Seção Disciplinas -->
+        <section class="card-list" style="flex:1;">
+            <h3>Disciplinas</h3>
+
+            <label>Instituição / Curso</label>
+            <select id="disc_instituicao"></select>
+
+            <div id="listaDisciplinas" style="margin-top:12px;"></div>
+
+            <h4 style="margin-top:16px;">Adicionar Disciplina</h4>
+            <form id="formDisciplina">
+                <label>Instituição / Curso</label>
+                <select name="instituicao" id="disc_instituicao_clone"></select>
+
+                <label>Nome da disciplina</label>
+                <input type="text" name="nome" required/>
+
+                <label>Sigla (para fórmula e tabela)</label>
+                <input type="text" name="sigla" required/>
+
+                <label>Código</label>
+                <input type="text" name="codigo" required/>
+
+                <label>Período (ex: 1º semestre)</label>
+                <input type="text" name="periodo" required/>
+
+                <button type="submit">Adicionar Disciplina</button>
+            </form>
+        </section>
+
+        <!-- Seção Turmas -->
+        <section class="card-list" style="flex:1;">
+            <h3>Turmas</h3>
+
+            <label>Instituição / Curso</label>
+            <select id="turma_instituicao"></select>
+
+            <label>Disciplina</label>
+            <select id="turma_disciplina" name="disciplinaSelect"></select>
+
+            <div id="listaTurmas" style="margin-top:12px;"></div>
+
+            <h4 style="margin-top:16px;">Adicionar Turma</h4>
+            <form id="formTurma">
+                <label>Disciplina</label>
+                <select name="disciplina" id="turma_disciplina_clone"></select>
+
+                <label>Nome da turma (ex: Turma 1)</label>
+                <input type="text" name="nomeTurma" required/>
+
+                <label>Apelido / turno (ex: Noite)</label>
+                <input type="text" name="apelido" required/>
+
+                <button type="submit">Adicionar Turma</button>
+
+                <!-- Aviso sobre exclusão -->
+                <div class="notice" style="margin-top:12px;">
+                    Ao excluir uma turma, a ação é irreversível. No projeto real,
+                    haveria confirmação via e-mail conforme descrito no escopo. Aqui usamos
+                    apenas um <code>confirm()</code> na interface. :contentReference[oaicite:9]{index=9}
+                </div>
+            </form>
+        </section>
+    </div>
+</main>
+
+<!-- Rodapé -->
+<footer>NotaDez - Projeto Integrador 2 (PUC-Campinas, 2025) :contentReference[oaicite:10]{index=10}</footer>
+
+<!-- Scripts principais do sistema -->
+<script src="scripts/config.js"></script>
+<script src="scripts/storage.js"></script>
+<script src="scripts/auth.js"></script>
+<script src="scripts/dashboard.js"></script>
+</body>
+</html>

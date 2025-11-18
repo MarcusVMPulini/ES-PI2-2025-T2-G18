@@ -1,0 +1,175 @@
+/* Autores: Gabriel, Arthur*/
+
+/* Remove espaçamentos padrão da página */
+body {
+    padding: 0;
+    margin: 0;
+}
+
+/* === CONTAINER DA TELA DE LOGIN === */
+#login {
+    margin: 0 auto;          /* Centraliza horizontalmente */
+    margin-top: 220px;       /* Empurra para baixo */
+    width: 450px;            /* Tamanho fixo do card */
+    padding: 20px;           /* Espaçamento interno */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    border-radius: 10px;     /* Bordas arredondadas */
+    padding-bottom: 20px;    /* Espaço extra inferior */
+}
+
+/* Labels específicos — força estilo mesmo com Bootstrap */
+label[for="inputemail"],
+label[for="inputPassword6"] {
+    font-weight: 700 !important;     /* Negrito */
+    color: #495057 !important;       /* Cor padrão Bootstrap */
+    white-space: nowrap !important;  /* Evita quebra de linha */
+    width: 80px !important;          /* Mesma largura para alinhar */
+    text-align: right !important;     /* Alinha texto à direita */
+    padding-right: 1px !important;    /* Aproxima do input */
+}
+
+/* Inputs do login — estilização individual por ID */
+#inputemail,
+#inputPassword6 {
+    border-radius: 0.3rem;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;   /* Aumenta área interna */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    height: 45px;       /* Altura fixa */
+    width: 280px;       /* Largura fixa para alinhamento */
+}
+
+/* Estilo de foco — deixa o input azul quando clicado */
+#inputemail:focus,
+#inputPassword6:focus {
+    border-color: #86b7fe !important;
+    outline: 0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Texto abaixo dos inputs */
+.form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}
+
+/* Espaçamento entre grupos de input */
+.form-group {
+    margin-bottom: 0.8rem;
+}
+
+/* Ajusta a posição dos spans de ajuda */
+.form-group .form-text {
+    margin-left: 105px;
+}
+
+/* Ajuste fino do checkbox "Lembre-me" */
+#switchCheckDefault {
+    margin-left: 65px;
+}
+
+/* Espaçamento entre checkbox e label */
+.form-check-label {
+    margin-left: 5px;
+}
+
+/* Estilo do link "Esqueci a senha" */
+#forgotpassword {
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: -140px;  /* Posição manual */
+}
+
+#forgotpassword:hover {
+    text-decoration: underline;
+}
+
+/* Link 'Criar Conta' */
+#createacount {
+    text-decoration: none;
+    font-weight: 500;
+    color: rgb(95, 95, 95);
+    margin-left: 55px;
+}
+
+#createacount:hover {
+    text-decoration: underline;
+    color: black;
+}
+
+/* Link 'Voltar ao login' */
+#BackLogin {
+    text-decoration: none;
+    font-weight: 500;
+    color: rgb(95, 95, 95);
+    margin-left: 55px;
+}
+
+#BackLogin:hover {
+    text-decoration: underline;
+    color: black;
+}
+
+/* Botão do login */
+#login button {
+    margin-left: 50px;
+    margin-top: 15px;
+    width: 180px;
+}
+
+/* Espaço extra abaixo do botão */
+#login .row:has(button) {
+    margin-bottom: 5px;
+}
+
+/* === CONTAINER DE CADASTRO === */
+#cadastro {
+    margin: 0 auto;
+    margin-top: 220px;
+    width: 450px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
+
+/* Inputs do cadastro — ainda para alinhar manualmente */
+#inputemailCadastro,
+#inputPasswordCadastro {
+    border-radius: 0.3rem;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    height: 45px;
+    width: 280px;
+}
+
+/* === TELA ESQUECI A SENHA === */
+#EsqueciSenha {
+    margin: 0 auto;
+    margin-top: 220px;
+    width: 450px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
+
+/* Input da tela 'Esqueci a senha' */
+#inputemailEsqueciSenha {
+    border-radius: 0.3rem;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    height: 45px;
+    width: 280px;
+}
+
+/* Container genérico */
+#info {
+    padding: 20px;
+    border-radius: 10px;
+    padding-bottom: 20px;
+}

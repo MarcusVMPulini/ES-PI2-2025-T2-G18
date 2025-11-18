@@ -1,0 +1,174 @@
+/* Autores: Arthur*/
+
+body {
+    font-family: Arial, Helvetica, sans-serif; /* Fonte padrão do site */
+}
+
+
+
+/* ====== HEADER FIXO SUPERIOR ====== */
+header {
+  position: fixed;              /* Fixa no topo da tela */
+  top: 0;
+  left: 0;
+  width: 100%;                  /* Ocupa toda a largura */
+  background: #fff;             /* Fundo branco */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Sombra leve */
+  z-index: 1000;                /* Fica acima de tudo */
+  min-height: 40px;             /* Altura mínima */
+  display: flex;                /* Layout em linha */
+  align-items: center;          /* Centraliza verticalmente */
+  justify-content: space-between; /* Espaço entre os itens */
+  padding: 0 32px;              /* Espaçamento interno lateral */
+  box-sizing: border-box;       /* Inclui padding no cálculo da largura */
+}
+
+/* Botão de logout */
+.logout-btn {
+  background: #ef5350;          /* Vermelho */
+  color: #fff;                  /* Texto branco */
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 1rem;        /* Altura reduzida */
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 2rem;
+  transition: background 0.2s;  /* Efeito hover suave */
+}
+
+.header-esquerda {
+  display: flex;
+  align-items: center;
+}
+
+.usuario {
+  font-weight: 500;
+  color: #888;                  /* Cinza claro */
+}
+
+.dashboard-link {
+  color: #2962ff;               /* Azul médio */
+  text-decoration: none;
+  font-size: 1.1rem;
+  margin-left: 2rem;
+}
+
+.header-direita {
+  display: flex;
+  align-items: center;
+}
+
+/* Hover no botão de logout */
+.logout-btn:hover {
+  background: #d32f2f;
+}
+
+
+
+/* ====== CONTEÚDO PRINCIPAL ====== */
+main {
+  max-width: 1400px;             /* Largura máxima */
+  margin: 0 auto;                /* Centraliza */
+  margin-top: 3.5rem;            /* Compensa header fixo */
+  padding: 40px 32px;            /* Espaçamento interno */
+  border-radius: 16px;           /* Bordas arredondadas */
+  background: #fff;              /* Fundo branco */
+  box-shadow: 0 6px 24px rgba(0,0,0,0.10); /* Sombra forte */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Linha flexível com espaçamento entre seções */
+.flex-row {
+  display: flex;
+  gap: 32px;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+/* ====== CARTÕES DAS SEÇÕES ====== */
+.card-list {
+  background: #f7fafc;           /* Fundo cinza claro */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.06); /* Sombra suave */
+  padding: 24px 20px 16px 20px;
+  flex: 1 1 0;                   /* Divide espaço igualmente */
+  min-width: 330px;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;                     /* Distância entre itens do card */
+  border: 1px solid #e2e8f0;     /* Borda leve */
+}
+
+h3, h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+/* Labels dos formulários */
+form label {
+  margin-top: 8px;
+  margin-right: 4px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Inputs e selects */
+input[type="text"], select {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;                   /* Ocupa toda a largura */
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Botões de submit dos formulários */
+button[type="submit"] {
+  background: #2962ff;           /* Azul */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 20px;
+  margin-top: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button[type="submit"]:hover {
+  background: #0039cb;           /* Azul mais escuro */
+}
+
+/* Avisos dentro dos cards (exclusão etc.) */
+.notice {
+  font-size: 0.95rem;
+  background: #fff1f0;           /* Vermelho claro */
+  color: #a94442;                /* Texto vermelho escuro */
+  padding: 7px 10px;
+  border-radius: 6px;
+  margin-top: 10px;
+  border: 1px solid #ffd6d3;     /* Borda vermelha clara */
+}
+
+
+
+/* ====== RODAPÉ ====== */
+footer {
+  width: 100%;
+  background: #f4f6fa;           /* Cinza claro */
+  border-top: 1px solid #dde1e7;
+  color: #7b8591;                /* Cinza escuro */
+  text-align: center;
+  font-size: 0.98rem;
+  padding: 18px 0 14px 0;
+  margin-top: 40px;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  letter-spacing: 0.03em;        /* Espaço entre letras */
+}
