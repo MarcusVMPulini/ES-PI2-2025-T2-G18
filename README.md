@@ -10,6 +10,7 @@ Marcus Vinícius Martins Pulini | RA: 25009605
 Arthur Valerio De Santi | RA: 25006924
 Gabriel Rocca Padua dos Santos | RA: 25002330
 Lucas Leonel | RA: 25015188
+
 ---------------------------------------------Utilização código------------------------------------------
 
 1° passo-) Ao abrir o ambiente de teste, clonar o repositorio atraves do link: 
