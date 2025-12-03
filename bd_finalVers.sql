@@ -159,6 +159,9 @@ ADD COLUMN periodo VARCHAR(50) NULL;
 ALTER TABLE turmas 
 ADD COLUMN codigo VARCHAR(20) NULL,
 ADD COLUMN apelido VARCHAR(100) NULL;
+
+
+
 CREATE TABLE auditoria_notas_simples (
     id INT AUTO_INCREMENT PRIMARY KEY,
     idNota INT NOT NULL,
